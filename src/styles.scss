@@ -1,1 +1,71 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'IRANSans';
+  font-style: normal;
+  font-weight: normal;
+  src: url("assets/fonts/IRANSansMonoSpacedNumfix.ttf");
+  src: url("assets/fonts/IRANSansMonoSpacedNumfix.woff") format("woff"), url("assets/fonts/IRANSansMonoSpacedNumfix.ttf") format("truetype")
+}
+
+body, body *, * {
+  font-family: "IRANSans", Tahoma, serif;
+}
+
+/*#region scrollStyle*/
+* {
+  //overflow-y: scroll;
+  scrollbar-color: #cccccc transparent;
+  scrollbar-width: thin;
+  //scrollbar-height: thin;
+}
+
+::-webkit-scrollbar {
+  height: 11px;
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  /*border: thin solid lightgray;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1) inset;*/
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border: 2px solid transparent;
+  border-radius: 9px;
+  background-clip: content-box;
+}
+
+/*#endregion*/
+
+tr.no-data-row{
+  display: flex;
+  border-width: 0;
+  border-style: solid;
+  align-items: center;
+  box-sizing: border-box;
+  td{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    min-height: inherit;
+    height: 100%;
+  }
+}
+
+
+//////////////////////
+.relative{
+  position: relative;
+}
+.add-table-btn{
+  position: absolute !important;
+  right: 15px;
+  top:15px;
+}
+.modal-50{
+  width:500px;
+}

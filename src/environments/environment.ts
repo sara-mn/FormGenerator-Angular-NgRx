@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  staging : false,
+  production: false,
+  url: 'https://sara-mn.github.io/FormBuilderDemo/',
+  preUrl: '',
+  note:'this is development',
+
 };
 
 /*

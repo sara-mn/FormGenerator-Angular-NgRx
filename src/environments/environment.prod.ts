@@ -1,3 +1,7 @@
 export const environment = {
-  production: true
+  staging : false,
+  production: true,
+  note:'this is production',
+  url: 'https://sara-mn.github.io/FormBuilderDemo/',
+  preUrl: ''
 };
