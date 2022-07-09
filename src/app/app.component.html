@@ -3,10 +3,10 @@
     <span class="">Admin Panel</span>
     <span class="spacer"></span>
     <div id="side-toolbar-section" fxLayout="row" fxLayoutAlign="end center">
-      <button mat-icon-button class="" aria-label="heart">
+      <button mat-icon-button class="toolbar-icon-btn" aria-label="heart">
         <mat-icon>favorite</mat-icon>
       </button>
-      <button mat-icon-button class="" aria-label="share">
+      <button mat-icon-button class="toolbar-icon-btn" aria-label="share">
         <mat-icon>share</mat-icon>
       </button>
     </div>
@@ -33,7 +33,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="main auto-z-index">
-      <button mat-button (click)="sidenav.toggle()" class="menu-btn" aria-label="menu">
+      <button mat-icon-button (click)="sidenav.toggle()" class="menu-btn" aria-label="menu">
         <mat-icon>menu</mat-icon>
       </button>
       <div class="relative">

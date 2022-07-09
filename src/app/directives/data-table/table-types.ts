@@ -1,12 +1,15 @@
-export interface Table {
+import {Observable} from "rxjs";
+
+export interface Table<T> {
   hasFilter?: boolean,
   hasSort?: boolean,
-  hasPaginaion?: boolean,
+  hasPagination?: boolean,
   addable?:boolean,
-  removeable?: boolean,
+  removable?: boolean,
   editable?:boolean,
   onAddEvent?: any,
-  columns: TableColumn[],
+  onCloseDialog$: Observable<any>,
+  getColumns$: Observable<T[]>,
 }
 
 export interface TableColumn {

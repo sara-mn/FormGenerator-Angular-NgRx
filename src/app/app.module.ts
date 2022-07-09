@@ -5,21 +5,38 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatDialogRef, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
+import { FormListComponent } from './components/form/form-list/form-list.component';
+import { FormEntryComponent } from './components/form/form-entry/form-entry.component';
+import { FormDetailComponent } from './components/form/form-detail/form-detail.component';
+import { LoginComponent } from './components/auth/login/login.component';
+import { RegisterComponent } from './components/auth/register/register.component';
+import { UserListComponent } from './components/auth/user-list/user-list.component';
+import { ProfileComponent } from './components/auth/profile/profile.component';
+import {DataTableComponent} from "./directives/data-table/data-table.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FormListComponent,
+    FormEntryComponent,
+    FormDetailComponent,
+    LoginComponent,
+    RegisterComponent,
+    UserListComponent,
+    ProfileComponent,
+    DataTableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MaterialModule,
     FlexLayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     {

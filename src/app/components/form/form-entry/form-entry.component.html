@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>New Form</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="formOfFormCreator">
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-around center"  layout-wrap>
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput placeholder="" formControlName="field.name" name="name">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Display</mat-label>
+        <input type="text" matInput placeholder="" formControlName="field.display" name="display">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Type</mat-label>
+        <mat-select #fontSize formControlName="field.type"  name="type">
+          <mat-option *ngFor="let type of fieldTypes" >{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Description</mat-label>
+        <textarea matInput
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="5"
+                  name="description"
+                  formControlName="field.description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>InputFormat</mat-label>
+        <input type="text" matInput placeholder="" formControlName="field.inputFormat" name="inputFormat">
+      </mat-form-field>
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>DisplayFormat</mat-label>
+        <input type="text" matInput placeholder="" formControlName="field.displayFormat" name="displayFormat">
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button cdkFocusInitial (click)="saveField()">Save</button>
+</mat-dialog-actions>
