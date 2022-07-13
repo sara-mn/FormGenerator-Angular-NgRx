@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule,ReactiveFormsModule} from "@angular/forms";
 
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatDialogRef, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
@@ -17,6 +17,8 @@ import { RegisterComponent } from './components/auth/register/register.component
 import { UserListComponent } from './components/auth/user-list/user-list.component';
 import { ProfileComponent } from './components/auth/profile/profile.component';
 import {DataTableComponent} from "./directives/data-table/data-table.component";
+import { CdProfilerService } from './services/cd-profiler.service';
+import {NgrxModule} from "./states/ngrx.module";
 
 @NgModule({
   declarations: [
@@ -33,16 +35,17 @@ import {DataTableComponent} from "./directives/data-table/data-table.component";
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
-    ReactiveFormsModule,
-    FormsModule
+    NgrxModule
   ],
   providers: [
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS, //dialog
       useValue: {
-        hasBackdrop: true,
+        hasBackdrop: false,
         width: "70%",
         //height: "80%",
         maxHeight: "90%",
@@ -62,4 +65,5 @@ import {DataTableComponent} from "./directives/data-table/data-table.component";
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor (private cd: CdProfilerService) {}
 }

@@ -5,75 +5,98 @@ import {
   ViewChild,
   OnChanges,
   Output,
-  SimpleChange,
-  ElementRef,
-  OnDestroy
+  OnDestroy, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Field} from 'src/app/components/form/form-types';
 import {Table} from './table-types';
-import {catchError, fromEvent, Observable, Subscription, switchMap, take, tap, throwError} from "rxjs";
 import {MatButton} from "@angular/material/button";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'data-table',
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss']
 })
-export class DataTableComponent implements OnInit,OnDestroy {
+export class DataTableComponent implements OnInit , OnChanges {
   @Input() data!: Table<any>;
-  @Output() onAddEvent !: () => void;
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-  @ViewChild(MatSort) sort: MatSort | undefined;
+  @Output() onAddEvent = new EventEmitter<any>();
+  @Output() onRefreshEvent = new EventEmitter<any>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('input') input = {value: ''};
 
-  dataSource: MatTableDataSource<Field> = new MatTableDataSource();
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columns: any[] = [];
   displayedColumns: string[] = [];
   numberOfColumns: number = 0;
   filterValue: any;
-  createNewSubscription: any;
-  fetch = new Observable();
 
-  constructor() {
+  resultsLength = 0;
+  isLoadingResults = true;
+  isRateLimitReached = false;
+
+  constructor(public dialog: MatDialog,
+              ) {
+
   }
 
   ngOnInit(): void {
-    this.fetch = this.data.getColumns$
-      .pipe(
-        tap((cols) => {
-          console.log('data fetching')
-          this.columns = cols;
-          if(cols.length){
-            this.displayedColumns = Object.keys(cols[0]);
-            this.numberOfColumns = this.displayedColumns.length;
-          }
-          this.dataSource.data = cols;
-        }),
-        take(1),
-        catchError((error) => {
-          return throwError(error)
-        })
-      );
-
-    this.fetch.subscribe((a) => {
-      console.log('data fetched')
-    })
-
+    this.generateTableData();
     this.filterValue = this.input.value;
   }
 
-  //
-  // ngOnChanges() {
-  //   this.fetch()
-  // }
+  ngOnChanges() {
+    this.generateTableData()
+  }
+
+  generateTableData() {
+    if (this.data.columns)
+      this.columns = this.data.columns;
+
+    if (this.columns.length) {
+      this.displayedColumns = Object.keys(this.columns[0]);
+      this.numberOfColumns = this.displayedColumns.length;
+    }
+    this.dataSource.data = this.columns;
+    // this.changeDetectorRefs.detectChanges();
+  }
 
   ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
 
-    this.dataSource.paginator = this.paginator || null;
-    this.dataSource.sort = this.sort || null;
+    // If the user changes the sort order, reset back to the first page.
+    this.dataSource.sort.sortChange.subscribe(() => {
+      if (this.dataSource.paginator)
+        this.dataSource.paginator.pageIndex = 0
+    });
+
+    // merge(this.dataSource.sort.sortChange, this.dataSource.paginator.page)
+    //   .pipe(
+    //     startWith({}),
+    //     switchMap(() => {
+    //       this.isLoadingResults = true;
+    //       return this.data.getColumns$.pipe(catchError(() => of(null)));
+    //     }),
+    //     map(data => {
+    //       // Flip flag to show that loading has finished.
+    //       this.isLoadingResults = false;
+    //       this.isRateLimitReached = data === null;
+    //
+    //       if (data === null) {
+    //         return [];
+    //       }
+    //       this.columns = data;
+    //       if (data.length) {
+    //         this.displayedColumns = Object.keys(data[0]);
+    //         this.numberOfColumns = this.displayedColumns.length;
+    //       }
+    //       return data;
+    //     }),
+    //   )
+    //   .subscribe(data => (this.dataSource.data = data));
   }
 
   applyFilter(event: Event) {
@@ -85,7 +108,15 @@ export class DataTableComponent implements OnInit,OnDestroy {
     }
   }
 
+  onAddBtnClick() {
+    this.onAddEvent.emit();
+  }
+
+  onRefreshBtnClick() {
+    this.onRefreshEvent.emit();
+  }
+
   ngOnDestroy() {
-    this.createNewSubscription.unsubscribe();
+    //this.refreshData();
   }
 }

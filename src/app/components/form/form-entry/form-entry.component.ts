@@ -3,7 +3,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from 'src/app/enums';
-import {FormControl, FormBuilder, FormGroup, AbstractControl, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-form-entry',
@@ -13,9 +13,9 @@ import {FormControl, FormBuilder, FormGroup, AbstractControl, Validators} from '
 export class FormEntryComponent implements OnInit {
   result: any;
   id: number = 0;
- // form: Form;
+  // form: Form;
   fieldTypes: string[];
-  formOfFormCreator: FormGroup;
+  formOfFormCreator!: FormGroup;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { id: number },
               private formService: FormService,
@@ -25,6 +25,12 @@ export class FormEntryComponent implements OnInit {
 
     this.id = this.data?.id || 0;
     this.fieldTypes = this.enums.fieldType().getKeys();
+  }
+
+  ngOnInit(): void {
+    if (this.id) {
+
+    }
     this.formOfFormCreator = this.formBuilder.group({
       name: ['', [
         Validators.required,
@@ -35,7 +41,7 @@ export class FormEntryComponent implements OnInit {
       accessLevel: ['', [
         Validators.required
       ]],
-      fields:this.formBuilder.array([
+      fields: this.formBuilder.array([
         this.formBuilder.group({
           formId: ['', [
             Validators.required
@@ -55,26 +61,18 @@ export class FormEntryComponent implements OnInit {
         })
       ]),
     })
-
-
   }
 
-  ngOnInit(): void {
-    if (this.id) {
-
-    }
-
-
-  }
-
-  saveField() {
-    // try {
-    //   this.form.id = await this.formService.create(this.form) as number;
-    //   console.log(`field number ${this.form.id} is saved`);
-    //   this.close({id : this.form.id});
-    // } catch (e) {
-    //   console.log(e);
-    // }
+  saveForm() {
+    this.formService.create(this.formOfFormCreator.value)
+      .pipe()
+      .subscribe({
+        next : (id) => {
+          console.log(`form number ${id} is saved`);
+          this.close({id});
+        },
+        error: err => console.log(err.timestamp, err.message)
+      })
   }
 
   close(result: any) {

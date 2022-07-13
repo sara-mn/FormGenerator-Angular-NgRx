@@ -1,18 +1,17 @@
 
-<div fxLayout="row" fxLayoutAlign="space-between center">
+ <div fxLayout="row" fxLayoutAlign="space-between center">
   <mat-form-field appearance="standard" *ngIf="data.hasFilter">
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
   </mat-form-field>
 
-  <button mat-mini-fab color="basic" aria-label="add field" *ngIf="data.addable" (click)="onAddEvent()">
+  <button mat-mini-fab color="basic" aria-label="add field" *ngIf="data.addable" (click)="onAddBtnClick()">
     <mat-icon>add</mat-icon>
   </button>
 </div>
+ <mat-table [dataSource]="dataSource" matSort>
 
-<mat-table [dataSource]="dataSource" matSort>
-
-  <ng-container *ngFor="let column of displayedColumns">
+  <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
     <mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </mat-header-cell>
     <mat-cell *matCellDef="let row"> {{row[column]}} </mat-cell>
   </ng-container>
@@ -26,4 +25,8 @@
   </tr>
 </mat-table>
 
-<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users">
+  <button mat-mini-fab color="basic" aria-label="add field" *ngIf="data.addable" (click)="onRefreshBtnClick()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</mat-paginator>

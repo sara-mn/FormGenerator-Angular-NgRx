@@ -1,15 +1,20 @@
 import {Observable} from "rxjs";
 
+export declare interface ComponentType<T> {
+  new(...args: any[]): T;
+}
+
 export interface Table<T> {
   hasFilter?: boolean,
   hasSort?: boolean,
   hasPagination?: boolean,
-  addable?:boolean,
+  addable?: boolean,
   removable?: boolean,
-  editable?:boolean,
+  editable?: boolean,
   onAddEvent?: any,
-  onCloseDialog$: Observable<any>,
-  getColumns$: Observable<T[]>,
+  columns?: T[]
+  //addComponent ? : ComponentType<any>,
+  //getColumns$: Observable<T[]>,
 }
 
 export interface TableColumn {

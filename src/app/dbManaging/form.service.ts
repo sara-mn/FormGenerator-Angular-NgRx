@@ -19,14 +19,8 @@ export class FormService {
     return from(s)
   }
 
-  async getByName(req: DBRequest): Promise<Form | null> {
-    const form = await db.forms.where('name').equals(req.params['name']).toArray();
-    console.log(await this.getAll());
-
-    if (form.length > 0)
-      return form[0];
-    else
-      return null;
+   getByName(req: DBRequest): Observable<Form | undefined> {
+    return from(db.forms.where('name').equals(req.params['name']).first());
   }
 
   async getById(req: DBRequest) {
@@ -39,20 +33,19 @@ export class FormService {
       throw 'form not found'
   }
 
-  async create(form: Form): Promise<IndexableType> {
-    let foundForm = await this.getByName({params: form});
-
-    if (foundForm)
-      throw "this Form is exist!"
-
+  create(form: Form): Observable<IndexableType> {
+    this.getByName({params: form})
+      .subscribe((result) => {
+        if(result)
+          throw "this Form is exist!"
+      });
     const cmd: Form = {
       name: form.name,
       displayName: form.displayName,
       accessLevel: form.accessLevel
     }
-
     try {
-      return await db.forms.add(cmd);
+      return from(db.forms.add(cmd));
     } catch (error) {
       throw error;
     }
