@@ -1,24 +1,37 @@
 import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
 
+/*  module  */
+import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
 import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {FormsModule,ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NgrxModule} from "./states/ngrx.module";
 
+/*  config  */
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatDialogRef, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-import { FormListComponent } from './components/form/form-list/form-list.component';
-import { FormEntryComponent } from './components/form/form-entry/form-entry.component';
-import { FormDetailComponent } from './components/form/form-detail/form-detail.component';
-import { LoginComponent } from './components/auth/login/login.component';
-import { RegisterComponent } from './components/auth/register/register.component';
-import { UserListComponent } from './components/auth/user-list/user-list.component';
-import { ProfileComponent } from './components/auth/profile/profile.component';
-import {DataTableComponent} from "./directives/data-table/data-table.component";
-import { CdProfilerService } from './services/cd-profiler.service';
-import {NgrxModule} from "./states/ngrx.module";
+import {MAT_SELECT_CONFIG} from "@angular/material/select";
+
+/*  service  */
+import {CdProfilerService} from './services/cd-profiler.service';
+
+/*  component  */
+import {AppComponent} from './app.component';
+import {FormListComponent} from './components/form/form-list/form-list.component';
+import {FormEntryComponent} from './components/form/form-entry/form-entry.component';
+import {FormDetailComponent} from './components/form/form-detail/form-detail.component';
+import {LoginComponent} from './components/auth/login/login.component';
+import {RegisterComponent} from './components/auth/register/register.component';
+import {UserListComponent} from './components/auth/user-list/user-list.component';
+import {ProfileComponent} from './components/auth/profile/profile.component';
+import {GridComponent} from "./directives/grid/grid.component";
+import {DataTableComponent} from './directives/data-table/data-table.component';
+import {FieldEntryComponent} from './components/field/field-entry/field-entry.component';
+import {MAT_PAGINATOR_DEFAULT_OPTIONS} from "@angular/material/paginator";
+import { DigitsLengthValidatorDirective } from './directives/formValidators/digits-length-validator.directive';
+import { FormValidateErrorMessageDirective } from './directives/formValidators/form-validate-error-message.directive';
+
 
 @NgModule({
   declarations: [
@@ -30,7 +43,11 @@ import {NgrxModule} from "./states/ngrx.module";
     RegisterComponent,
     UserListComponent,
     ProfileComponent,
-    DataTableComponent
+    GridComponent,
+    DataTableComponent,
+    FieldEntryComponent,
+     DigitsLengthValidatorDirective,
+     FormValidateErrorMessageDirective,
   ],
   imports: [
     BrowserModule,
@@ -55,15 +72,30 @@ import {NgrxModule} from "./states/ngrx.module";
     },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, //form
-      useValue: {appearance: 'fill'}
+      useValue: {
+       // appearance: 'fill'
+      }
     },
     {
       provide: MatDialogRef,
+      useValue: {}
+    },
+    {
+      provide: MAT_SELECT_CONFIG,
+      useValue: {
+        disableOptionCentering: false,        //Whether option centering should be disabled.
+        // overlayPanelClass:  ,              //Class or list of classes to be applied to the menu's overlay panel => string | string[] | Set<string> | { [key: string]: any; }
+        // typeaheadDebounceInterval: 1000    //Time to wait in milliseconds after the last keystroke before moving focus to an item.
+      }
+    },
+    {
+      provide: MAT_PAGINATOR_DEFAULT_OPTIONS,
       useValue: {}
     },
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor (private cd: CdProfilerService) {}
+  constructor(private cd: CdProfilerService) {
+  }
 }

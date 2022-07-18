@@ -1,0 +1,4 @@
+{
+  "tooShort": "Your phone number is too short! You entered {0} digits (required: 10)",
+  "tooLong": "There's too many digits in your phone number! You entered {0} digits (required: 10)"
+}

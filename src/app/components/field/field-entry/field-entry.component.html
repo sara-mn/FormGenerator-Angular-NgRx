@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>New Field</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="fieldGroup">
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-around center"
+         layout-wrap>
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput placeholder="" formControlName="name" name="name">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Display</mat-label>
+        <input type="text" matInput placeholder="" formControlName="display" name="display">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Type</mat-label>
+        <mat-select #fontSize formControlName="type" name="type">
+          <mat-option *ngFor="let type of fieldTypes" [value]="type">{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Description</mat-label>
+        <input type="text" matInput placeholder="" formControlName="description" name="description">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>InputFormat</mat-label>
+        <input type="text" matInput placeholder="" formControlName="inputFormat" name="inputFormat">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>DisplayFormat</mat-label>
+        <input type="text" matInput placeholder="" formControlName="displayFormat" name="displayFormat">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>AccessLevel</mat-label>
+        <mat-select #fontSize formControlName="accessLevel" name="accessLevel">
+          <mat-option *ngFor="let level of fieldAccessLevels" [value]="level">{{level}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button cdkFocusInitial (click)="add()">Save</button>
+</mat-dialog-actions>

@@ -76,3 +76,15 @@ tr.no-data-row {
 .modal-50 {
   width: 500px;
 }
+
+fieldset.sub-form{
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 10px;
+
+  legend{
+    padding: 0 10px;
+    font-size: large;
+  }
+}
