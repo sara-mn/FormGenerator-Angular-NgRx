@@ -3,11 +3,9 @@ import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog
 import {Field, Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from 'src/app/enums';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {MatTableDataSource} from "@angular/material/table";
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FieldEntryComponent} from "../../field/field-entry/field-entry.component";
 import {Table} from "../../../directives/grid/grid-types";
-import {Error_Directive_Input} from "../../../directives/formValidators/validation.type";
 import {ValidateFormService} from "../../../services/validate.form.service";
 
 @Component({
@@ -18,6 +16,8 @@ import {ValidateFormService} from "../../../services/validate.form.service";
 export class FormEntryComponent implements OnInit {
   result: any;
   id: number = 0;
+  errors: string[] = [];
+  showErrors: boolean = false;
   fieldsTableData: Table<Field> = {
     hasFilter: false,
     hasSort: false,
@@ -49,26 +49,7 @@ export class FormEntryComponent implements OnInit {
       name: ['', [
         Validators.required,
         Validators.minLength(4),
-        Validators.maxLength(20),
-        (control: AbstractControl) => {
-          // remove anything that isn't a digit
-          const numDigits = control.value.replace(/[^\d]+/g, '').length;
-          // Only worried about US-based numbers for now, no need for country code
-          if (numDigits === 10) {
-            return null;
-          }
-          // Uh oh, something's wrong
-          if (numDigits > 10) {
-            return {
-              tooLong: {numDigits}
-            };
-          } else {
-            return {
-              tooShort: {numDigits}
-            };
-          }
-
-        }
+        Validators.maxLength(20)
       ]],
       displayName: ['', []],
       accessLevel: ['', [
@@ -85,7 +66,7 @@ export class FormEntryComponent implements OnInit {
   }
 
   get displayName() {
-    return this.formOfFormCreator.get('return') as FormControl;
+    return this.formOfFormCreator.get('displayName') as FormControl;
   }
 
   get accessLevel() {
@@ -96,6 +77,11 @@ export class FormEntryComponent implements OnInit {
     return this.formOfFormCreator.get('fields') as FormArray;
   }
 
+  isFieldValid(fieldName: string) {
+    const control = this.formOfFormCreator.get(fieldName) as FormControl;
+    return (control.invalid && (control.dirty || control.touched))
+  }
+
   addField() {
     const dialogRef = this.dialog.open(FieldEntryComponent, {
       //data: this.fieldsTableData,
@@ -103,6 +89,7 @@ export class FormEntryComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.addNewField(result)
       this.refreshFieldData();
+      this.errors = []
     })
     this.name.markAsTouched()
   }
@@ -121,9 +108,16 @@ export class FormEntryComponent implements OnInit {
   }
 
   saveForm() {
-    // if (this.formOfFormCreator.invalid)
-      // this.validateFormService.validateAllControls(this.formOfFormCreator);
-    // else
+    this.errors = [];
+    if (this.formOfFormCreator.invalid)
+      return this.validateFormService.validateAllControls(this.formOfFormCreator);
+
+    if (this.fields.controls.length === 0)
+      this.errors.push('field list cant be empty!')
+
+    if (this.errors.length > 0) {
+      this.showErrors = true;
+    } else
       this.formService.create(this.formOfFormCreator.value)
         .pipe()
         .subscribe({

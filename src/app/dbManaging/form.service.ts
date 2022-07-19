@@ -4,6 +4,7 @@ import {db} from "../../db";
 import {DBRequest, KeyValue} from "./types";
 import {IndexableType} from "dexie";
 import {from, Observable} from "rxjs";
+import {Guid as guid} from "js-guid";
 
 @Injectable({
   providedIn: 'root'
@@ -33,19 +34,41 @@ export class FormService {
       throw 'form not found'
   }
 
-  create(form: Form): Observable<IndexableType> {
+  create(form: FormWithFields): Observable<IndexableType> {
     this.getByName({params: form})
       .subscribe((result) => {
-        if(result)
-          throw "this Form is exist!"
+        if(result) {
+          throw "this Form is exist!";
+          return;
+        }
       });
-    const cmd: Form = {
+
+    const formId = guid.newGuid().toString();
+    const cmdForm: Form = {
+      id: formId,
       name: form.name,
       displayName: form.displayName,
       accessLevel: form.accessLevel
     }
+
+    const fieldList = [];
+    for(let field of form.fields){
+      fieldList.push({
+        id: guid.newGuid().toString(),
+        name: field.name,
+        display: field.display,
+        accessLevel: field.accessLevel,
+        formId: formId,
+        type: field.type,
+        description: field.description,
+        inputFormat: field.inputFormat,
+        displayFormat: field.displayFormat,
+      })
+    }
+
     try {
-      return from(db.forms.add(cmd));
+      db.fields.bulkAdd(fieldList);
+      return from(db.forms.add(cmdForm));
     } catch (error) {
       throw error;
     }
@@ -72,4 +95,8 @@ export class FormService {
     }
   }
 
+}
+
+interface FormWithFields extends Form {
+  fields : Field[]
 }

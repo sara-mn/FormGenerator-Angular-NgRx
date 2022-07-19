@@ -15,9 +15,15 @@ import {Error, Error_Directive_Input} from './validation.type'
   providers: [{provide: NG_VALIDATORS, useExisting: FormValidateErrorMessageDirective, multi: true}],
 })
 export class FormValidateErrorMessageDirective {
-  @Input('errorMessages') set errorMessages(control :{ errors : any ,formControl: FormControl<any>}) {
-    // let k = control;
-    this.setErrorMessage(control.formControl);
+  @Input('errorMessages') set errorMessages(control: { errors: any, isValid: Boolean }) {
+    this.errors = [];
+    if (control.isValid)
+      this.setErrorMessage(control.errors);
+
+    if (!this.isViewCreated) {
+      this.viewContainerRef.createEmbeddedView(this.templateRef, this.errorMessagesContext);
+      this.isViewCreated = true;
+    }
   }
 
   private readonly errorMessagesContext = new ErrorMessagesContext();
@@ -29,11 +35,9 @@ export class FormValidateErrorMessageDirective {
               private viewContainerRef: ViewContainerRef) {
   }
 
-  setErrorMessage(control: FormControl<any>) {
-    this.errors = [];
-    if (control.invalid && (control.dirty || control.touched))
-      if (control.errors !== null) {
-        this.errorObject = control.errors;
+  setErrorMessage(errors: Error[]) {
+      if (errors !== null) {
+        this.errorObject = errors;
         this.errors = Object.keys(this.errorObject).map(error => {
           let returnedObject = this.errorObject[error];
           return {
@@ -45,16 +49,6 @@ export class FormValidateErrorMessageDirective {
       }
 
     this.errorMessagesContext.errors = this.errors;
-
-    if (!this.isViewCreated) {
-      this.viewContainerRef.createEmbeddedView(this.templateRef, this.errorMessagesContext);
-      this.isViewCreated = true;
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    return changes;
-    //this.setErrorMessage()
   }
 
   static ngTemplateContextGuard(directive: FormValidateErrorMessageDirective, context: unknown)

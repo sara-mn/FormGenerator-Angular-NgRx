@@ -11,9 +11,9 @@ export class MyDatabase extends Dexie {
   constructor() {
     super('myDatabase');
     this.version(13).stores({
-      users: '++id, name, email,password,token,rememberMe,agreementWithRights', // Primary key and indexed props
-      forms: '++id,name,displayName,accessLevel,data',
-      fields: '++id,formId ,name,display, type, description,inputFormat, displayFormat'
+      users: '++id, name, email,password,token,rememberMe,agreementWithRights', // Primary key and indexed props ++id
+      forms: 'id,name,displayName,accessLevel,data',
+      fields: 'id,formId ,name,display, type, description,inputFormat, displayFormat'
     });
     this.open();
   }

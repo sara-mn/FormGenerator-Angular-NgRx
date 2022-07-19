@@ -88,3 +88,33 @@ fieldset.sub-form{
     font-size: large;
   }
 }
+
+.error-box{
+  border: 1px solid #eb4769;
+  background: #fdeef1;
+  color: #dd395a;
+  font-size: 13px;
+  border-radius: 3px;
+  padding: 10px 30px;
+  margin: 20px 20px;
+}
+
+.warning-box{
+
+}
+
+.success-box{
+
+}
+
+.info-box{
+
+}
+
+.padding-20{
+  padding: 20px;
+}
+
+.padding-bottom-20{
+  padding-bottom: 20px;
+}

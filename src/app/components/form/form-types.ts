@@ -6,12 +6,13 @@ export interface Form {
 }
 
 export interface Field {
-  id?: number,
-  formId?: number,
+  id?: string,
+  formId?: string,
   name?: string,
   display?: string,
   type?: string,
   description?: string,
   inputFormat?: string,
-  displayFormat?: string
+  displayFormat?: string,
+  accessLevel?: string,
 }

@@ -29,9 +29,8 @@ import {GridComponent} from "./directives/grid/grid.component";
 import {DataTableComponent} from './directives/data-table/data-table.component';
 import {FieldEntryComponent} from './components/field/field-entry/field-entry.component';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from "@angular/material/paginator";
-import { DigitsLengthValidatorDirective } from './directives/formValidators/digits-length-validator.directive';
-import { FormValidateErrorMessageDirective } from './directives/formValidators/form-validate-error-message.directive';
-
+import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
+import { InfoBoxDirective } from './directives/infoBox/info-box.directive'
 
 @NgModule({
   declarations: [
@@ -46,8 +45,8 @@ import { FormValidateErrorMessageDirective } from './directives/formValidators/f
     GridComponent,
     DataTableComponent,
     FieldEntryComponent,
-     DigitsLengthValidatorDirective,
-     FormValidateErrorMessageDirective,
+    FormValidateErrorMessageDirective,
+    InfoBoxDirective
   ],
   imports: [
     BrowserModule,
