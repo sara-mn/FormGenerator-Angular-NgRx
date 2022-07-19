@@ -8,6 +8,13 @@ export class ValidateFormService {
 
   constructor() {
   }
-
+  validateAllControls(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control !== null) {
+        control.markAsTouched({ onlySelf: true });
+      }
+    });
+  }
 
 }
