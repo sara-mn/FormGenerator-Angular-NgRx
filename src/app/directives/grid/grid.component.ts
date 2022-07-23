@@ -21,6 +21,8 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() data!: Table<any>;
   @Output() onAddEvent = new EventEmitter<any>();
   @Output() onRefreshEvent = new EventEmitter<any>();
+  @Output() onEditEvent = new EventEmitter<any>();
+  @Output() onDeleteEvent = new EventEmitter<any>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('input') input = {value: ''};
@@ -35,7 +37,8 @@ export class GridComponent implements OnInit, OnChanges {
   isLoadingResults = true;
   isRateLimitReached = false;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     this.generateTableData();
@@ -53,6 +56,7 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.columns.length) {
       this.displayedColumns = Object.keys(this.columns[0]).filter(item => item !== 'id');
       this.displayedColumns.unshift('No.');
+      this.displayedColumns.push('action');
       this.numberOfColumns = this.displayedColumns.length;
     }
     this.dataSource.data = this.columns;
@@ -84,5 +88,17 @@ export class GridComponent implements OnInit, OnChanges {
 
   onRefreshBtnClick() {
     this.onRefreshEvent.emit();
+  }
+
+  onEditBtnClick(currentRow: any) {
+    this.onEditEvent.emit({id : currentRow.id});
+  }
+
+  onDeleteBtnClick(currentRow: any) {
+    this.onDeleteEvent.emit({id : currentRow.id});
+  }
+
+  onRowClick(currentRow: any) {
+    //ToDo function
   }
 }

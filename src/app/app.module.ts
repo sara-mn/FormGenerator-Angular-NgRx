@@ -30,7 +30,7 @@ import {DataTableComponent} from './directives/data-table/data-table.component';
 import {FieldEntryComponent} from './components/field/field-entry/field-entry.component';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from "@angular/material/paginator";
 import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
-import { InfoBoxDirective } from './directives/infoBox/info-box.directive'
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -46,7 +46,6 @@ import { InfoBoxDirective } from './directives/infoBox/info-box.directive'
     DataTableComponent,
     FieldEntryComponent,
     FormValidateErrorMessageDirective,
-    InfoBoxDirective
   ],
   imports: [
     BrowserModule,
@@ -58,6 +57,10 @@ import { InfoBoxDirective } from './directives/infoBox/info-box.directive'
     NgrxModule
   ],
   providers: [
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {duration: 3000}
+    },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS, //dialog
       useValue: {
@@ -72,7 +75,7 @@ import { InfoBoxDirective } from './directives/infoBox/info-box.directive'
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, //form
       useValue: {
-       // appearance: 'fill'
+        // appearance: 'fill'
       }
     },
     {

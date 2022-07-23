@@ -1,22 +1,15 @@
-::ng-deep .mat-paginator-page-size-select {
-  //width: 27px !important;
-  ///background-color: transparent;
+.table-row-action{
+  visibility: hidden;
 }
-::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
-  //background-color: transparent;
+.table-row:hover {
+  background: whitesmoke;
+  .table-row-action{
+    visibility: visible;
+  }
 }
 
-::ng-deep .mat-select-value {
-  //color: #005999;
-  //font-weight: bold;
-  //font-size: 15px;
-}
-::ng-deep .mat-select-arrow {
-  //color: #005999;
-}
-::ng-deep .mat-option {
-  //padding: 0 !important;
-}
-::ng-deep .mat-option-text {
-  //text-align: right;
+.actionCol{
+  justify-content: end;
+  display: flex;
+  flex-direction: row;
 }

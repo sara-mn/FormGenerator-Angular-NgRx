@@ -1,14 +1,12 @@
 import {
   Directive,
   Input,
-  OnChanges,
-  SimpleChanges,
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
 import {FormControl, NG_VALIDATORS, ValidationErrors} from "@angular/forms";
 import formErrors from './form.errors.json';
-import {Error, Error_Directive_Input} from './validation.type'
+import {Error} from './validation.type'
 
 @Directive({
   selector: '[errorMessages]',

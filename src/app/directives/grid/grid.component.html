@@ -1,4 +1,4 @@
-<div fxLayout="row">
+<div fxLayout="row" class="padding-bottom-10">
   <div fxFlex="50" fxLayout="row" fxLayoutAlign="flex-start center">
     <mat-form-field appearance="standard" *ngIf="data.hasFilter">
       <mat-label>Filter</mat-label>
@@ -6,29 +6,57 @@
     </mat-form-field>
   </div>
   <div fxFlex="50" fxLayout="row" fxLayoutAlign="flex-end center">
-    <button fxFlexOffset="10px" mat-mini-fab color="basic" aria-label="add field" *ngIf="data.addable" (click)="onAddBtnClick()">
+    <button fxFlexOffset="10px" mat-icon-button color="basic" aria-label="add field" *ngIf="data.addable"
+            (click)="onAddBtnClick()">
       <mat-icon>add</mat-icon>
     </button>
-    <button fxFlexOffset="10px" mat-mini-fab color="basic" aria-label="add field" *ngIf="data.addable" (click)="onRefreshBtnClick()">
+    <button fxFlexOffset="10px" mat-icon-button color="basic" aria-label="add field" *ngIf="data.addable"
+            (click)="onRefreshBtnClick()">
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
 </div>
- <mat-table [dataSource]="dataSource" matSort>
+<mat-table [dataSource]="dataSource" matSort>
 
-  <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns,let i = index">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{column === 'No.' ? i+1 :row[column]}} </mat-cell>
+  <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns"
+                [stickyEnd]="column === 'action'">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> {{column === 'action' ? '' : column}} </mat-header-cell>
+    <mat-cell *matCellDef="let row,let i = index" [class.actionCol]="column === 'action'">
+      <div *ngIf="column === 'No.'; then numberRow  else (column === 'action' ? actionRow : item)"></div>
+      <ng-template #numberRow>{{ i + 1 }}</ng-template>
+      <ng-template #actionRow>
+       <div class="table-row-action">
+         <button mat-icon-button aria-label="edit" (click)="onEditBtnClick(row)">
+           <mat-icon>edit</mat-icon>
+         </button>
+         <button mat-icon-button aria-label="delete" (click)="onDeleteBtnClick(row)">
+           <mat-icon>delete</mat-icon>
+         </button>
+       </div>
+      </ng-template>
+      <ng-template #item>{{row[column]}}</ng-template>
+    </mat-cell>
+    <ng-template *ngIf="data.hasFooter">
+      <mat-footer-cell *matFooterCellDef> Total</mat-footer-cell>
+    </ng-template>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  <mat-header-row *matHeaderRowDef="displayedColumns; sticky: data.isHeaderSticky"></mat-header-row>
+  <mat-row
+    (click)="onRowClick(row)"
+    class="table-row"
+    *matRowDef="let row; columns: displayedColumns">
+  </mat-row>
+  <ng-template *ngIf="data.hasFooter">
+    <mat-footer-row *matFooterRowDef="displayedColumns; sticky: data.isFooterSticky"></mat-footer-row>
+  </ng-template>
 
   <!-- Row shown when there is no matching data. -->
-  <tr class="mat-row no-data-row" *matNoDataRow >
+  <tr class="mat-row no-data-row" *matNoDataRow>
     <td class="mat-cell">No data matching the filter "{{filterValue}}"</td>
   </tr>
 </mat-table>
 
-<mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" formFieldAppearance="outline" aria-label="Select page">
+<mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" formFieldAppearance="outline"
+               aria-label="Select page">
 </mat-paginator>

@@ -1,12 +1,32 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {Field, Form} from '../form-types';
+import {Field, Form, FormWithFields} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from 'src/app/enums';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FieldEntryComponent} from "../../field/field-entry/field-entry.component";
 import {Table} from "../../../directives/grid/grid-types";
 import {ValidateFormService} from "../../../services/validate.form.service";
+import {take} from "rxjs";
+import {LoggerService} from "../../../services/logger.service";
+
+const fieldModel = {
+  name: ['', [
+    Validators.required
+  ]],
+  display: ['', [
+    Validators.required
+  ]],
+  type: ['', [
+    Validators.required
+  ]],
+  description: ['', []],
+  inputFormat: ['', []],
+  displayFormat: ['', []],
+  accessLevel: ['', [
+    Validators.required
+  ]],
+}
 
 @Component({
   selector: 'app-form-entry',
@@ -15,7 +35,7 @@ import {ValidateFormService} from "../../../services/validate.form.service";
 })
 export class FormEntryComponent implements OnInit {
   result: any;
-  id: number = 0;
+  id: string;
   errors: string[] = [];
   showErrors: boolean = false;
   fieldsTableData: Table<Field> = {
@@ -29,22 +49,17 @@ export class FormEntryComponent implements OnInit {
   formOfFormCreator!: FormGroup;
   formAccessLevels = ["superAdmin", "Admin", "user"];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { id: number },
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { id: string },
               private formService: FormService,
               private formBuilder: FormBuilder,
               private validateFormService: ValidateFormService,
               private enums: Enums,
               private dialog: MatDialog,
               private changeDetectorRef: ChangeDetectorRef,
-              public dialogRef: MatDialogRef<FormEntryComponent>) {
+              public dialogRef: MatDialogRef<FormEntryComponent>,
+              private logger : LoggerService) {
 
-    this.id = this.data?.id || 0;
-  }
-
-  ngOnInit(): void {
-    if (this.id) {
-
-    }
+    this.id = this.data?.id;
     this.formOfFormCreator = this.formBuilder.group({
       name: ['', [
         Validators.required,
@@ -59,6 +74,32 @@ export class FormEntryComponent implements OnInit {
         // this.formBuilder.group(fieldModel)
       ]),
     });
+  }
+
+  ngOnInit(): void {
+    if (this.id) {
+      this.formService.getById({params: {id: this.id}})
+        .pipe(
+          take(1)
+        )
+        .subscribe({
+          next: (result) => {
+            console.log(result)
+            if (result) {
+              this.formOfFormCreator.patchValue(result);
+              this.changeDetectorRef.detectChanges();
+              for (let field of (result as FormWithFields).fields) {
+                const group = this.formBuilder.group(fieldModel);
+                group.patchValue(field as Field);
+                this.addNewField(group);
+                this.refreshFieldData()
+              }
+            }
+          },
+          error: (err) => this.logger.show(err),
+          complete: () => {}
+        })
+    }
   }
 
   get name(): FormControl<any> {
@@ -117,16 +158,23 @@ export class FormEntryComponent implements OnInit {
 
     if (this.errors.length > 0) {
       this.showErrors = true;
-    } else
-      this.formService.create(this.formOfFormCreator.value)
-        .pipe()
+    } else {
+      const obs$ = this.id
+        ? this.formService.update(this.id, this.formOfFormCreator.value)
+        : this.formService.create(this.formOfFormCreator.value);
+      const saveSubscription = obs$.pipe()
         .subscribe({
           next: (id) => {
             console.log(`form number ${id} is saved`);
             this.close({id});
           },
-          error: err => console.log(err.timestamp, err.message)
+          error: err => this.logger.error(err.message),
+          complete: () => {
+            saveSubscription.unsubscribe();
+            this.logger.success()
+          }
         })
+    }
   }
 
   convertToArray(obj: any) {

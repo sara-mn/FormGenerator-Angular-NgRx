@@ -16,3 +16,7 @@ export interface Field {
   displayFormat?: string,
   accessLevel?: string,
 }
+
+export interface FormWithFields extends Form {
+  fields: Field[]
+}
