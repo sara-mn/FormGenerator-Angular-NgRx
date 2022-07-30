@@ -10,11 +10,12 @@ export const __filename = fileURLToPath(import.meta.url); // instead __filename 
 export const __dirname = dirname(__filename);
 
 const express = require('express');
-let bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
-const jwkToPem = require('jwk-to-pem');
+const secretKey = "49UKZU60X1b7Em97VKeeW0blpvSsAm3m";
+const {sign, verify} = require("jsonwebtoken");
 
 const port = 8000;
 const host = 'localhost';
@@ -32,56 +33,46 @@ app.get('/', (req, res) => {
   //res.sendFile(__dirname + '/client.html');
 });
 
-app.post('/auth/login',(req, res) => {
+app.post('/auth/login', (req, res) => {
 
-    console.log(req);
-    const email = req.body.username,
-      password = req.body.password;
+  console.log(req);
+  const payload = req.body.payload;
+  const token = generateToken(payload);
 
-    if (validateEmailAndPassword(email, password)) {
-      // const userId = '1';  //indUserIdForEmail(email);
-      //
-      // const jwtBearerToken: any = jwt.sign({}, RSA_PRIVATE_KEY, {
-      //   algorithm: 'RS256',
-      //   expiresIn: 120,
-      //   subject: userId
-      // })
-
-      const cpol_token = "eyJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6ImFkbWluIiwiVXNlcm5hbWUiOiJhZG1pbiJ9.EaNjxRUVMzq5l7aP7SbI0RcwemLDQKorQTrEeLRRSr4"
-      res.cookie("SESSIONID", cpol_token, {httpOnly: true, secure: true});
-
-      res.status(200).send({
-        token: cpol_token,
-        // expiresIn: ...
-      })
-    } else
-      // send status 401 Unauthorized
-      //res.sendStatus(400)
-      res.status(400).send('username or password is wrong!')
-
-  });
-
-app.post('/auth/verify',(req, res) => {
-
-    const token = req.body.token;
-
-    jwt.verify(token, 'cpol-secret-key', {algorithms: ['HS256']}, function (err, decodedToken)
-    {
-      console.log(decodedToken)
-    });
-
+  if(token)
     res.status(200).send({
-      user: jwt.decode(token),
+      token,
     })
+  else
+    res.status(400).send('error !')
+});
 
-  });
+app.post('/auth/verify', (req, res) => {
+
+  const token = req.body.token;
+  const verified = verifyToken(token)
+
+  res.status(200).send({
+    verified,
+  })
+
+});
 
 // const RSA_PRIVATE_KEY = fs.readFileSync('./demos/private.key');
 
-server.listen(port,host,() => {
+server.listen(port, host, () => {
   console.log(`server listening on ${host}:${port}`);
 });
 
 function validateEmailAndPassword(email, password) {
   return (email === 'admin' && password === 'admin')
+}
+
+function generateToken(payload) {
+  const k = sign(payload, secretKey, {expiresIn: '1h'});
+  return k
+}
+
+function verifyToken(token) {
+  return verify(token, secretKey, {complete: true})
 }

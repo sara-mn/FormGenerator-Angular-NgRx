@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {AuthApiService} from "../ApiManaging/auth.api.service";
 import {AppState, User, User_CPol} from "../../types";
-import {from, Observable, take, tap} from "rxjs";
+import {from, Observable, switchMap, take, tap} from "rxjs";
 import {Store} from "@ngrx/store";
 import {Router, UrlTree} from "@angular/router";
 import {JwtProvider} from "../jwtProvider";
-import {Login, Register} from "../components/auth/auth-types";
+import {Login, Register, Token_Payload} from "../components/auth/auth-types";
 import {UserService} from "../dbManaging/user.service";
 
 @Injectable({
@@ -16,6 +16,7 @@ export class LoginRegisterService {
   jwtProvider = new JwtProvider();
 
   constructor(private userService: UserService,
+              private authApi : AuthApiService,
               private store: Store<AppState>,
               private router: Router) {
   }
@@ -23,12 +24,14 @@ export class LoginRegisterService {
   login(cmd: Login): Observable<User> {
     return this.userService.getByEmailAndPassword({params: cmd})
       .pipe(
-        tap((user: User) => {
-          const jwtPayload = {
-            userId: user.id
+        switchMap((user: User) => {
+          const jwtPayload : Token_Payload = {
+            payload:{
+              userId : user.id
+            }
           };
-          const token = this.jwtProvider.generate(jwtPayload);
-          this.setLocalStorage(token)
+          return this.authApi.login(jwtPayload)
+            .pipe(tap((result) => this.setLocalStorage(result.token)));
         })
       )
   }
