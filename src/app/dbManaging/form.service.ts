@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Form, FormWithFields} from "../components/form/form-types";
 import {db} from "../../db";
-import {DBRequest, KeyValue} from "./types";
+import {DBRequest} from "./types";
 import {IndexableType} from "dexie";
 import {AsyncSubject, BehaviorSubject, combineLatest, from, Observable} from "rxjs";
-import {Guid as guid} from "js-guid";
+import {Guid as guid} from "guid-typescript";
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +27,10 @@ export class FormService {
     return from(db.forms.where('name').equals(req.params['name']).first());
   }
 
-  getById(req: DBRequest): Observable<any> {
-    const formPromise = db.forms.where('id').equals(req.params['id']).first();
-    const relatedFieldsPromise = db.fields.where('formId').equals(req.params['id']).toArray();
-    return combineLatest([formPromise, relatedFieldsPromise], (form, fields) => {
+  getById(req: DBRequest): Observable<Form> {
+    const form$ = from(db.forms.where('id').equals(req.params['id']).first());
+    const relatedFields$ = from(db.fields.where('formId').equals(req.params['id']).toArray());
+    return combineLatest([form$, relatedFields$], (form, fields) => {
       return {
         ...form,
         fields
@@ -47,7 +47,7 @@ export class FormService {
         }
       });
 
-    const formId = guid.newGuid().toString();
+    const formId = this.createGuid();
     return this.saveForm(formId, form)
   }
 
@@ -61,7 +61,7 @@ export class FormService {
     const fieldList = [];
     for (let field of form.fields) {
       fieldList.push({
-        id: guid.newGuid().toString(),
+        id: this.createGuid(),
         name: field.name,
         display: field.display,
         accessLevel: field.accessLevel,
@@ -73,12 +73,12 @@ export class FormService {
       })
     }
 
-    const getFormById = this.getById({params: {id}});
-    const deleteFields = this.deleteFormFieldsBatch(id);
-    const addFields = from(db.fields.bulkAdd(fieldList));
-    const EditForm = from(db.forms.update(id, cmdForm));
+    const getFormById$ = this.getById({params: {id}});
+    const deleteFields$ = this.deleteFormFieldsBatch(id);
+    const addFields$ = from(db.fields.bulkAdd(fieldList));
+    const EditForm$ = from(db.forms.update(id, cmdForm));
     try {
-      return combineLatest([getFormById, deleteFields, addFields, EditForm], (getFormByIdResult, deleteFieldsResult, addFieldsResult, EditFormResult) => {
+      return combineLatest([getFormById$, deleteFields$, addFields$, EditForm$], (getFormByIdResult, deleteFieldsResult, addFieldsResult, EditFormResult) => {
         return EditFormResult;
       })
     } catch (error) {
@@ -87,10 +87,10 @@ export class FormService {
   }
 
   delete(id: string): Observable<void> {
-    const deleteFields = this.deleteFormFieldsBatch(id);
-    const deleteForm = from(db.forms.delete(id));
+    const deleteFields$  = this.deleteFormFieldsBatch(id);
+    const deleteForm$ = from(db.forms.delete(id));
     try {
-      return combineLatest([deleteFields, deleteForm], (deleteFieldsResult, deleteFormResult) => {
+      return combineLatest([deleteFields$, deleteForm$], (deleteFieldsResult, deleteFormResult) => {
         return deleteFormResult;
       })
     } catch (error) {
@@ -120,7 +120,7 @@ export class FormService {
     const fieldList = [];
     for (let field of form.fields) {
       fieldList.push({
-        id: guid.newGuid().toString(),
+        id: this.createGuid(),
         name: field.name,
         display: field.display,
         accessLevel: field.accessLevel,
@@ -140,5 +140,8 @@ export class FormService {
     }
   }
 
+  createGuid() {
+    return guid.create().toString();
+  }
 }
 

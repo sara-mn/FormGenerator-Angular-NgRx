@@ -1,14 +1,17 @@
 import {NgModule} from "@angular/core";
-import {StoreModule} from "@ngrx/store";
-import {formReducer} from "./form.state";
+import {ActionReducerMap, StoreModule} from "@ngrx/store";
+import {UserReducer as userReducer} from "./user.state";
+import {AppState, User} from "../../types";
+
+const reducers: ActionReducerMap<AppState, any> = {
+  user: userReducer
+};
 
 @NgModule({
-  imports:[
-    StoreModule.forRoot({
-     // forms: formReducer
-    })
+  imports: [
+    StoreModule.forRoot(reducers)
   ]
 })
-export class NgrxModule{
+export class NgrxModule {
 
 }

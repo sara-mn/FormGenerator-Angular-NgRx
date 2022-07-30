@@ -54,8 +54,12 @@ export class AlertService {
     //ToDo
   }
 
-  error() {
-    //ToDo
+  error(message : string) {
+    return from(swal({
+      title: 'error',
+      text: message,
+      icon: "error",
+    }))
   }
 
   warning() {

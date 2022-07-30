@@ -7,6 +7,7 @@ import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgrxModule} from "./states/ngrx.module";
+import {HttpClientModule , HTTP_INTERCEPTORS} from "@angular/common/http";
 
 /*  config  */
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
@@ -31,6 +32,8 @@ import {FieldEntryComponent} from './components/field/field-entry/field-entry.co
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from "@angular/material/paginator";
 import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
+import {AuthGuard} from "./services/guard/auth.guard";
+import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.service";
 
 @NgModule({
   declarations: [
@@ -47,9 +50,13 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
     FieldEntryComponent,
     FormValidateErrorMessageDirective,
   ],
+  // entryComponents:[
+  //   LoginComponent
+  // ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
@@ -57,6 +64,17 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
     NgrxModule
   ],
   providers: [
+     AuthGuard,
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: RetryInterceptorService,
+    //   multi: true
+    // },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: RetryInterceptorService,
+    //   multi: true
+    // },
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
       useValue: {duration: 3000}

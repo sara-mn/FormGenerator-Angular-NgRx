@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {User} from '../../types';
 import {db} from "../../db";
 import {DBRequest, KeyValue} from "./types";
 import {IndexableType} from "dexie";
+import {from, map, Observable, combineLatest} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor() { }
+  constructor() {
+  }
+
   static async getAll(req: DBRequest) {
     const users = await db.users.toArray();
 
@@ -39,20 +42,26 @@ export class UserService {
       throw 'user not found'
   }
 
-  static async getByEmailAndPassword(req: DBRequest) {
+  getByEmailAndPassword(req: DBRequest): Observable<User> {
     // let users = JSON.parse(localStorage.getItem('users') || '[]');
     // const user = users.filter((e: KeyValue) => e.email === req.params.email && e.password === req.params.password);
-
-    const user = await db.users.get({email: req.params['email'], password: req.params['password']});
-    console.log(await this.getAll(req));
-    return user;
+    return from(db.users.where({email: req.params['username'], password: req.params['password']}).first())
+      .pipe(map(user => {
+        if (typeof user === 'undefined') {
+          throw 'username or password is wrong!';
+        }
+        return user;
+      }));
   }
 
-  static async create(user: User): Promise<IndexableType> {
-    let foundUser = await this.getByEmailAndPassword({params: user});
-
-    if(foundUser)
-      throw "this user is exist!"
+  create(user: User): Observable<IndexableType> {
+    const foundUser$ = from(db.users.where({email: user.email}).first())
+      .pipe(map(user => {
+        if (typeof user !== 'undefined') {
+          throw 'email is exist!';
+        }
+        return true;
+      }));
 
     const cmd: User = {
       name: user.name,
@@ -62,13 +71,16 @@ export class UserService {
       rememberMe: user.rememberMe,
       agreementWithRights: user.agreementWithRights
     }
+    const saveUser$ = from(db.users.add(cmd));
 
     try {
       // let users = JSON.parse(localStorage.getItem('users') ?? '[]');
       // users.push(cmd);
       // localStorage.setItem('users', JSON.stringify(users));
 
-      return await db.users.add(cmd);
+      return combineLatest([foundUser$, saveUser$], (user, saveResult) => {
+        return saveResult;
+      })
     } catch (error) {
       throw error;
     }

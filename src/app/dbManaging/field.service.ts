@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Field } from '../form/form-types';
 import { DBRequest, KeyValue } from './types';
 import {IndexableType} from "dexie";
 import { db } from 'src/db';
+import {Field} from "../components/form/form-types";
 
 @Injectable({
   providedIn: 'root'

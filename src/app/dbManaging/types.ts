@@ -20,5 +20,3 @@ export interface DBResponse {
 export interface DBEntity extends dexie.Table<object, dexie.IndexableType> {
 }
 
-export interface DBResponse {
-}
