@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {AuthApiService} from "../ApiManaging/auth.api.service";
-import {AppState, User, User_CPol} from "../../types";
-import {from, Observable, switchMap, take, tap} from "rxjs";
+import {AppState, User} from "../../types";
+import {distinctUntilChanged, from, map, Observable, switchMap, take, tap} from "rxjs";
 import {Store} from "@ngrx/store";
 import {Router, UrlTree} from "@angular/router";
 import {JwtProvider} from "../jwtProvider";
 import {Login, Register, Token_Payload} from "../components/auth/auth-types";
 import {UserService} from "../dbManaging/user.service";
+import {LoginAction} from "../states/user.state";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class LoginRegisterService {
   jwtProvider = new JwtProvider();
 
   constructor(private userService: UserService,
-              private authApi : AuthApiService,
+              private authApi: AuthApiService,
               private store: Store<AppState>,
               private router: Router) {
   }
@@ -24,16 +25,21 @@ export class LoginRegisterService {
   login(cmd: Login): Observable<User> {
     return this.userService.getByEmailAndPassword({params: cmd})
       .pipe(
+        take(1),
         switchMap((user: User) => {
-          const jwtPayload : Token_Payload = {
-            payload:{
-              userId : user.id
+          const jwtPayload: Token_Payload = {
+            payload: {
+              userId: user.id
             }
           };
           return this.authApi.login(jwtPayload)
-            .pipe(tap((result) => this.setLocalStorage(result.token)));
-        })
-      )
+            .pipe(tap((result) => this.setLocalStorage(result.token)))
+        }))
+
+    // tap((user) => {
+    //   const actionPayload = {id: user.id};
+    //   this.store.dispatch(new LoginAction(actionPayload))
+    // })
   }
 
   register(cmd: User): Observable<any> {
@@ -41,24 +47,49 @@ export class LoginRegisterService {
   }
 
   isUserLoggedIn() {
-    let token = this.currentToken;
-    let k;
-    if (!!token) {
-      k = this.jwtProvider.verify(token);
-
-    }
-    console.log(k)
-    return true
+    let currentUser;
+    const user$: Observable<User> = this.store.select('user') //(state : AppState) => state.user
+    user$.subscribe({
+      next: user => this.userService.userSubject$.next(user),
+      complete: () => this.userService.userSubject$.complete(),
+    })
+    // .pipe(
+    //   take(1),
+    //   distinctUntilChanged(),
+    //   map(user => {
+    //
+    // })).subscribe();
+    return true;
   }
 
   setLocalStorage(token: string) {
     localStorage.setItem('token', token)
   }
 
+//
+//   let token = this.currentToken;
+//   let k;
+//   if (!!token) {
+//   this.authApi.verify(token)
+// .pipe(
+//     switchMap((result) => {
+//   return this.userService.getById(result.payload.userId);
+// })
+// )
+// .subscribe({
+//   next: (user) => {
+//     const userAction = new LoginAction(user);
+//     this.store.dispatch(userAction);
+//   },
+//   error: (err) => {}
+// });
+// }
+// return true
+
   // loginAction(token: string): Observable<any> {
   //   return this.authApi.verifyToken(token).pipe(
   //     take(1),
-  //     tap((result: User_CPol) => {
+  //     tap((result: User) => {
   //       const userAction = {
   //         type: 'LOGIN',
   //         payload: result

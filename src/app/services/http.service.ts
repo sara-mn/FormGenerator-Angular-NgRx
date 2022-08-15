@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpContext, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import { KeyValue } from '../dbManaging/types';
+import {KeyValue} from '../dbManaging/types';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,9 @@ export class HttpService {
   post<T>(url: string, data: any, options?: IRequest): Observable<T> {
     this.options = {
       params: {},
-      headers: this.getHeaders(options?.headers)
+      headers: this.getHeaders(options?.headers,options?.isAuthReq)
     };
-    return this.http.post<T>(url, data,this.options);
+    return this.http.post<T>(url, data, this.options);
   }
 
   put<T>(url: string, data: any, options?: IRequest): Observable<T> {
@@ -38,7 +38,7 @@ export class HttpService {
     return this.http.put<T>(url, data, this.options);
   }
 
-   patch<T>(url: string, data: any, options?: IRequest): Observable<T> {
+  patch<T>(url: string, data: any, options?: IRequest): Observable<T> {
     this.options = {
       params: {},
       headers: this.getHeaders(options?.headers),
@@ -55,12 +55,13 @@ export class HttpService {
     return this.http.delete<T>(url, this.options)
   }
 
-  getHeaders(headers?: KeyValue) {
+  getHeaders(headers?: KeyValue , isAuthReq?: boolean) {
     const _headers = new HttpHeaders(headers);
     _headers.append("Content-Type", "application/json");
-    // _headers.append("Access-Control-Allow-Origin", "http://localhost:8000");
-    // _headers.append("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    // _headers.append("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type,Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+    if (localStorage.getItem('token') && !isAuthReq) {
+      const token = `Bearer ${localStorage.getItem('token')}`;
+      _headers.append("Authorization", token);
+    }
 
     return _headers;
   }
@@ -73,6 +74,7 @@ export class HttpService {
 interface IRequest {
   headers?: KeyValue;
   params?: KeyValue;
+  isAuthReq? : boolean;
 }
 
 interface HttpOptions {

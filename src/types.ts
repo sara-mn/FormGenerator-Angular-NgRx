@@ -32,5 +32,5 @@ export interface User_CPol {
 }
 
 export interface AppState {
-  user: User_CPol;
+  user: User;
 };

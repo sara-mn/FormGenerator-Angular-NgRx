@@ -1,34 +1,29 @@
 import {Injectable} from '@angular/core';
 import {AsyncSubject, catchError, map, Observable, of, pluck, shareReplay, tap} from "rxjs";
 import {HttpService} from "../services/http.service";
-import {User_CPol} from "../../types";
+import {User} from "../../types";
 import {Token_Payload} from "../components/auth/auth-types";
+import {ajax} from "rxjs/ajax";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthApiService {
-  //base_url = 'http://88.135.36.18:7005/api';
   base_url = 'http://localhost:8000';
-  userSubject$ = new AsyncSubject<User_CPol>();
 
   constructor(private httpService: HttpService) {
   }
 
-  verifyToken(token: string): Observable<any> {
-    return this.httpService.post(`${this.base_url}/auth/verify`, {token});
-  }
-
   login(data: Token_Payload): Observable<any> {
-    return this.httpService.post(`${this.base_url}/auth/login`, data)
+    return this.httpService.post(`${this.base_url}/auth/login`, data, {isAuthReq: true})
       .pipe(shareReplay());
   }
 
-  editProfile(id: string, data: User_CPol): Observable<any> {
-    return this.httpService.patch(`${this.base_url}/user/${id}`, data,);//autorization
+  editProfile(id: string, data: User): Observable<any> {
+    return this.httpService.patch(`${this.base_url}/user/${id}`, data,);
   }
-
 }
+
 // return ajax({
 //   url: `${this.base_url}/auth/login`,
 //   method: 'POST',
@@ -45,3 +40,4 @@ export class AuthApiService {
 //     return of(error);
 //   })
 // );
+

@@ -19,7 +19,6 @@ export class FormService {
 
   getAll(): Observable<Form[]> {
     const s = db.forms.toArray();
-    //from(s).subscribe(console.log)
     return from(s)
   }
 

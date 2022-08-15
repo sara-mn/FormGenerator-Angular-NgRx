@@ -1,4 +1,4 @@
-import {Action} from '@ngrx/store';
+import {Action, createAction, createReducer, on, props} from '@ngrx/store';
 import {User} from "../../types";
 
 const LOGIN = 'LOGIN';
@@ -30,7 +30,7 @@ export class EditProfileAction implements Action {
 
 type UserAction = RegisterAction | LoginAction | EditProfileAction;
 
-export function UserReducer(state= initialState, action: UserAction ){
+export function UserReducer(state = initialState, action: UserAction) {
   switch (action.type) {
     case LOGIN:
       return {...state, ...action.payload};
@@ -42,3 +42,15 @@ export function UserReducer(state= initialState, action: UserAction ){
       return {...state};
   }
 }
+
+/////////////    with createAction & createReducer    ////////////////////
+
+// const register = createAction('Register', props<{ user: User }>());
+// const login = createAction('Login', props<{ user: User }>());
+//
+// export function UserReducer1(state = initialState) {
+//   return createReducer(state,
+//     on(register, (state, {user}) => ({...state, user})),
+//     on(login, (state, {user}) => ({...state, user}))
+//   )
+// }

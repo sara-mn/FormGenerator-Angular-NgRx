@@ -39,7 +39,7 @@ app.post('/auth/login', (req, res) => {
   const payload = req.body.payload;
   const token = generateToken(payload);
 
-  if(token)
+  if (token)
     res.status(200).send({
       token,
     })
@@ -47,13 +47,14 @@ app.post('/auth/login', (req, res) => {
     res.status(400).send('error !')
 });
 
-app.post('/auth/verify', (req, res) => {
+app.post('/auth/editProfile', (req, res) => {
 
-  const token = req.body.token;
-  const verified = verifyToken(token)
+  const bearerToken = req.header.authorization;
+  const jwt = bearerToken.split(' ')[1];
+  const verified = verifyToken(jwt);
 
   res.status(200).send({
-    verified,
+    payload: verified.payload,
   })
 
 });
@@ -69,8 +70,7 @@ function validateEmailAndPassword(email, password) {
 }
 
 function generateToken(payload) {
-  const k = sign(payload, secretKey, {expiresIn: '1h'});
-  return k
+  return sign(payload, secretKey, {expiresIn: '1h'});
 }
 
 function verifyToken(token) {

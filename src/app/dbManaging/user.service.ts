@@ -3,13 +3,13 @@ import {User} from '../../types';
 import {db} from "../../db";
 import {DBRequest, KeyValue} from "./types";
 import {IndexableType} from "dexie";
-import {from, map, Observable, combineLatest} from "rxjs";
+import {from, map, Observable, combineLatest, filter, AsyncSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-
+  userSubject$ = new AsyncSubject<User>();
   constructor() {
   }
 
@@ -25,21 +25,23 @@ export class UserService {
 
     const user = await db.users.get((e: KeyValue) => e['token'] === req.params['token']);
     console.log(await this.getAll(req));
-
     if (user)
       return user;
     else
       throw 'user not found'
   }
 
-  static async getById(req: DBRequest) {
-    const user = await db.users.get((e: KeyValue) => e['id'] === req.params['id']);
-    console.log(await this.getAll(req));
-
-    if (user)
-      return user;
-    else
-      throw 'user not found'
+  getById(req: DBRequest) {
+    return from(db.users.where({id: req.params['id']}).first())
+      .pipe(
+        filter(user => typeof user !== 'undefined')
+        //   map(user => {
+        //   if (typeof user === 'undefined') {
+        //     throw 'username not found !';
+        //   }
+        //   return user;
+        // })
+      );
   }
 
   getByEmailAndPassword(req: DBRequest): Observable<User> {
