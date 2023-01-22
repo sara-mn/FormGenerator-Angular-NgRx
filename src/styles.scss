@@ -111,6 +111,10 @@ fieldset.sub-form{
 
 }
 
+.margin-left-0{
+  margin-left: 0 !important;
+}
+
 .padding-20{
   padding: 20px;
 }
@@ -121,4 +125,28 @@ fieldset.sub-form{
 
 .padding-bottom-10{
   padding-bottom: 10px;
+}
+
+.padding-bottom-5{
+  padding-bottom: 5px;
+}
+
+.m-0{
+  margin: 0 !important;
+}
+
+.addBtn{
+  position: absolute;
+  top: -5px;
+  right:10px;
+}
+
+
+.mat-checkbox-layout {
+  align-items: center !important;
+
+  .mat-checkbox-inner-container {
+    padding: 2px;
+    margin: 10px 15px 10px 0 !important;
+  }
 }

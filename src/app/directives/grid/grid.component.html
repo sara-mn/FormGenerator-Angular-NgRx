@@ -18,23 +18,34 @@
 </div>
 <mat-table [dataSource]="dataSource" matSort>
 
-  <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns"
-                [stickyEnd]="column === 'action'">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> {{column === 'action' ? '' : column}} </mat-header-cell>
-    <mat-cell *matCellDef="let row,let i = index" [class.actionCol]="column === 'action'">
-      <div *ngIf="column === 'No.'; then numberRow  else (column === 'action' ? actionRow : item)"></div>
+  <ng-container [matColumnDef]="column.key" *ngFor="let column of columns"
+                [stickyEnd]="column.key === 'action'">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> {{column.key === 'action' ? '' : column.key}} </mat-header-cell>
+    <mat-cell *matCellDef="let row,let i = index" [class.actionCol]="column.key === 'action'">
+      <div *ngIf="column.key === 'No.'; then numberRow  else (column.key === 'action' ? actionRow : item)"></div>
       <ng-template #numberRow>{{ i + 1 }}</ng-template>
       <ng-template #actionRow>
-       <div class="table-row-action">
-         <button mat-icon-button aria-label="edit" (click)="onEditBtnClick(row)">
-           <mat-icon>edit</mat-icon>
-         </button>
-         <button mat-icon-button aria-label="delete" (click)="onDeleteBtnClick(row)">
-           <mat-icon>delete</mat-icon>
-         </button>
-       </div>
+        <div class="table-row-action">
+          <button mat-icon-button aria-label="edit" (click)="onEditBtnClick(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="delete" (click)="onDeleteBtnClick(row)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="preview" (click)="onPreviewBtnClick(row)">
+            <mat-icon>preview</mat-icon>
+          </button>
+        </div>
       </ng-template>
-      <ng-template #item>{{row[column]}}</ng-template>
+      <ng-template #item>
+        <ng-container *ngIf="!column.type || column.type === 'string'">{{row[column.key]}}</ng-container>
+        <ng-container *ngIf="column.type === 'boolean'">
+          <mat-icon>{{ row[column.key] === true ? 'checked' : ''}}</mat-icon>
+        </ng-container>
+        <ng-container *ngIf="column.type === 'custom'">
+          <div [innerHTML]="row['custom_' + column.key]|safeHtml"></div>
+        </ng-container>
+      </ng-template>
     </mat-cell>
     <ng-template *ngIf="data.hasFooter">
       <mat-footer-cell *matFooterCellDef> Total</mat-footer-cell>

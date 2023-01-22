@@ -9,11 +9,11 @@ import {
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Table} from './grid-types';
+import {Column, Table} from './grid-types';
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
-  selector: 'data-table',
+  selector: 'grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
@@ -23,16 +23,17 @@ export class GridComponent implements OnInit, OnChanges {
   @Output() onRefreshEvent = new EventEmitter<any>();
   @Output() onEditEvent = new EventEmitter<any>();
   @Output() onDeleteEvent = new EventEmitter<any>();
+  @Output() onPreviewEvent = new EventEmitter<any>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('input') input = {value: ''};
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  columns: any[] = [];
+  rows: any[] = [];
+  columns: Column[] = [];
   displayedColumns: string[] = [];
   numberOfColumns: number = 0;
   filterValue: any;
-
   resultsLength = 0;
   isLoadingResults = true;
   isRateLimitReached = false;
@@ -50,16 +51,17 @@ export class GridComponent implements OnInit, OnChanges {
   }
 
   generateTableData() {
-    if (this.data.columns)
-      this.columns = this.data.columns;
+    if (this.data.rows)
+      this.rows = this.data.rows;
 
-    if (this.columns.length) {
-      this.displayedColumns = Object.keys(this.columns[0]).filter(item => item !== 'id');
-      this.displayedColumns.unshift('No.');
-      this.displayedColumns.push('action');
-      this.numberOfColumns = this.displayedColumns.length;
+    if (this.data.columns?.length) {
+      this.columns = this.data.columns;
+      this.columns.unshift({key: 'No.', display: 'No.'});
+      this.columns.push({key: 'action', display: 'action'});
+      this.displayedColumns = this.columns.map(c => c.key);
+      this.numberOfColumns = this.columns.length;
     }
-    this.dataSource.data = this.columns;
+    this.dataSource.data = this.rows;
   }
 
   ngAfterViewInit() {
@@ -91,11 +93,15 @@ export class GridComponent implements OnInit, OnChanges {
   }
 
   onEditBtnClick(currentRow: any) {
-    this.onEditEvent.emit({id : currentRow.id});
+    this.onEditEvent.emit({id: currentRow.id});
   }
 
   onDeleteBtnClick(currentRow: any) {
-    this.onDeleteEvent.emit({id : currentRow.id});
+    this.onDeleteEvent.emit({id: currentRow.id});
+  }
+
+  onPreviewBtnClick(currentRow: any) {
+    this.onPreviewEvent.emit({id: currentRow.id});
   }
 
   onRowClick(currentRow: any) {
