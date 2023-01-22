@@ -7,8 +7,7 @@
   </div>
 
   <form [formGroup]="fieldGroup">
-    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-around center"
-         layout-wrap>
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="30" layout-wrap>
       <mat-form-field fxFlex="30" class="">
         <mat-label>Name</mat-label>
         <input type="text" matInput placeholder="" formControlName="name" name="name">
@@ -23,19 +22,7 @@
         <mat-label>Display</mat-label>
         <input type="text" matInput placeholder="" formControlName="display" name="display">
         <mat-error>
-          <ul *errorMessages="{errors: display.errors, isValid :isFieldValid('name')}; errors as errors">
-            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
-          </ul>
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field fxFlex="30" class="">
-        <mat-label>Type</mat-label>
-        <mat-select #fontSize formControlName="type" name="type">
-          <mat-option *ngFor="let type of fieldTypes" [value]="type">{{type}}</mat-option>
-        </mat-select>
-        <mat-error>
-          <ul *errorMessages="{errors: type.errors, isValid :isFieldValid('name')}; errors as errors">
+          <ul *errorMessages="{errors: display.errors, isValid :isFieldValid('display')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -45,17 +32,67 @@
         <mat-label>Description</mat-label>
         <input type="text" matInput placeholder="" formControlName="description" name="description">
         <mat-error>
-          <ul *errorMessages="{errors: description.errors, isValid :isFieldValid('name')}; errors as errors">
+          <ul *errorMessages="{errors: description.errors, isValid :isFieldValid('description')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field fxFlex="30" class="">
+        <mat-label>Type</mat-label>
+        <mat-select #fontSize formControlName="type" name="type" (selectionChange)="onTypeChange($event)">
+          <mat-option *ngFor="let type of fieldTypes" [value]="type">{{type}}</mat-option>
+        </mat-select>
+        <mat-error>
+          <ul *errorMessages="{errors: type.errors, isValid :isFieldValid('type')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <fieldset class="sub-form relative margin-left-0" fxFlex="100" *ngIf="type.value === 'Radio' || type.value === 'List'">
+        <legend>items</legend>
+        <div class="addBtn">
+          <button fxFlexOffset="10px" mat-icon-button color="basic" aria-label="add field" (click)="onAddItem()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="" formArrayName="items" *ngFor="let item of (items.controls); let i = index;">
+          <div [formGroupName]="i" class="row" fxLayout="row wrap" fxLayoutGap="30">
+            <mat-form-field fxFlex="30" class="" >
+              <mat-label>Key</mat-label>
+              <input type="text" matInput placeholder="" formControlName="key" name="key">
+              <mat-error>
+                <ul *errorMessages="{errors: item.value['key'].errors, isValid :isFieldValid('key', item)}; errors as errors">
+                  <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+                </ul>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="30" class="">
+              <mat-label>Value</mat-label>
+              <input type="text" matInput placeholder="" formControlName="value" name="value">
+              <mat-error>
+                <ul *errorMessages="{errors: item.value['value'].errors, isValid :isFieldValid('value', item)}; errors as errors">
+                  <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+                </ul>
+              </mat-error>
+            </mat-form-field>
+
+            <div fxFlex="30" fxLayout="row" fxLayoutAlign="flex-start flex-end" class="padding-bottom-10">
+              <button mat-icon-button aria-label="delete" (click)="onDeleteItem(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <mat-form-field fxFlex="30" class="">
         <mat-label>InputFormat</mat-label>
         <input type="text" matInput placeholder="" formControlName="inputFormat" name="inputFormat">
         <mat-error>
-          <ul *errorMessages="{errors: inputFormat.errors, isValid :isFieldValid('name')}; errors as errors">
+          <ul *errorMessages="{errors: inputFormat.errors, isValid :isFieldValid('inputFormat')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -65,7 +102,7 @@
         <mat-label>DisplayFormat</mat-label>
         <input type="text" matInput placeholder="" formControlName="displayFormat" name="displayFormat">
         <mat-error>
-          <ul *errorMessages="{errors: displayFormat.errors, isValid :isFieldValid('name')}; errors as errors">
+          <ul *errorMessages="{errors: displayFormat.errors, isValid :isFieldValid('displayFormat')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -78,8 +115,78 @@
         </mat-select>
       </mat-form-field>
 
-    </div>
+      <mat-form-field fxFlex="30" *ngIf="type.value !== 'CheckBox' && type.value !== 'Radio' && type.value !== 'List'" class="">
+        <mat-label>Placeholder</mat-label>
+        <input type="text" matInput placeholder="" formControlName="placeholder" name="placeholder">
+        <mat-error>
+          <ul *errorMessages="{errors: placeholder.errors, isValid :isFieldValid('placeholder')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
 
+      <mat-form-field fxFlex="30" class="">
+        <mat-label>Pattern</mat-label>
+        <input type="text" matInput placeholder="" formControlName="pattern" name="pattern">
+        <mat-error>
+          <ul *errorMessages="{errors: pattern.errors, isValid :isFieldValid('pattern')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" *ngIf="type.value === 'Number'"  class="">
+        <mat-label>Min</mat-label>
+        <input type="number" matInput placeholder="" formControlName="min" name="min">
+        <mat-error>
+          <ul *errorMessages="{errors: min.errors, isValid :isFieldValid('min')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" *ngIf="type.value === 'Number'" class="">
+        <mat-label>Max</mat-label>
+        <input type="number" matInput placeholder="" formControlName="max" name="max">
+        <mat-error>
+          <ul *errorMessages="{errors: max.errors, isValid :isFieldValid('max')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" *ngIf="type.value === 'Text' || type.value === 'TextArea'" class="">
+        <mat-label>MinLength</mat-label>
+        <input type="number" matInput placeholder="" formControlName="minLength" name="minLength">
+        <mat-error>
+          <ul *errorMessages="{errors: minLength.errors, isValid :isFieldValid('minLength')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" *ngIf="type.value === 'Text' || type.value === 'TextArea'" class="">
+        <mat-label>MaxLength</mat-label>
+        <input type="number" matInput placeholder="" formControlName="maxLength" name="maxLength">
+        <mat-error>
+          <ul *errorMessages="{errors: maxLength.errors, isValid :isFieldValid('maxLength')}; errors as errors">
+            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+          </ul>
+        </mat-error>
+      </mat-form-field>
+
+      <div fxFlex="30" fxLayout="row" fxLayoutAlign="flex-start flex-end" class="padding-bottom-10">
+        <mat-checkbox color="primary" [formControlName]="'required'" [checked]="true">IsRequired</mat-checkbox>
+      </div>
+
+      <div fxFlex="30" *ngIf="type.value === 'CheckBox'" fxLayout="row" fxLayoutAlign="flex-start flex-end" class="padding-bottom-10">
+        <mat-checkbox formControlName="requiredTrue">IsRequiredTrue</mat-checkbox>
+      </div>
+
+      <div fxFlex="30" *ngIf="type.value === 'Password'" fxLayout="row" fxLayoutAlign="flex-start flex-end" class="padding-bottom-10">
+        <mat-checkbox formControlName="RepeatPassword">repeatPassword</mat-checkbox>
+      </div>
+    </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

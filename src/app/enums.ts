@@ -10,8 +10,10 @@ export class Enums {
 
   fieldType() {
     return new Enum (
-      [{key: "Date", display: "Date"},
+      [
+      {key: "Date", display: "Date"},
       {key: "Text", display: "Text"},
+      {key: "TextArea", display: "TextArea"},
       {key: "Password", display: "Password"},
       {key: "Email", display: "Email"},
       {key: "Tel", display: "Tel"},

@@ -22,7 +22,7 @@
         <div>
           <mat-nav-list>
             <mat-list-item *ngFor="let item of menuItems">
-              <a matLine href={{item.path}} fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <a matLine [routerLink]="item.path" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
                 <mat-icon>{{ item.icon }}</mat-icon>
                 <span>{{ item.display }}</span>
               </a>

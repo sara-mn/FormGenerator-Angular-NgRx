@@ -29,11 +29,12 @@ import {ProfileComponent} from './components/auth/profile/profile.component';
 import {GridComponent} from "./directives/grid/grid.component";
 import {DataTableComponent} from './directives/data-table/data-table.component';
 import {FieldEntryComponent} from './components/field/field-entry/field-entry.component';
-import {MAT_PAGINATOR_DEFAULT_OPTIONS} from "@angular/material/paginator";
 import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
-import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
 import {AuthGuard} from "./services/guard/auth.guard";
 import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.service";
+import {RouterModule} from "@angular/router";
+import { FormPreviewComponent } from './components/form/form-preview/form-preview.component';
+import {PipesModule} from "./pipes/pipes.module";
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.
     DataTableComponent,
     FieldEntryComponent,
     FormValidateErrorMessageDirective,
+    FormPreviewComponent,
   ],
   // entryComponents:[
   //   LoginComponent
@@ -61,7 +63,9 @@ import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.
     ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
-    NgrxModule
+    NgrxModule,
+    RouterModule,
+    PipesModule
   ],
   providers: [
      AuthGuard,
@@ -75,43 +79,7 @@ import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.
     //   useClass: RetryInterceptorService,
     //   multi: true
     // },
-    {
-      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-      useValue: {duration: 3000}
-    },
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS, //dialog
-      useValue: {
-        hasBackdrop: false,
-        width: "70%",
-        //height: "80%",
-        maxHeight: "90%",
-        maxWidth: "90%",
-        position: {top: '5%'}
-      }
-    },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, //form
-      useValue: {
-        // appearance: 'fill'
-      }
-    },
-    {
-      provide: MatDialogRef,
-      useValue: {}
-    },
-    {
-      provide: MAT_SELECT_CONFIG,
-      useValue: {
-        disableOptionCentering: false,        //Whether option centering should be disabled.
-        // overlayPanelClass:  ,              //Class or list of classes to be applied to the menu's overlay panel => string | string[] | Set<string> | { [key: string]: any; }
-        // typeaheadDebounceInterval: 1000    //Time to wait in milliseconds after the last keystroke before moving focus to an item.
-      }
-    },
-    {
-      provide: MAT_PAGINATOR_DEFAULT_OPTIONS,
-      useValue: {}
-    },
+
   ],
   bootstrap: [AppComponent]
 })
