@@ -1,17 +1,27 @@
 import {Injectable} from '@angular/core';
-import {Form, FormWithFields} from "../components/form/form-types";
-import {db} from "../../db";
+import {Field, FieldItem, Form} from "../components/form/form-types";
 import {DBRequest} from "./types";
 import {IndexableType} from "dexie";
-import {AsyncSubject, BehaviorSubject, combineLatest, from, Observable} from "rxjs";
+import {
+  AsyncSubject,
+  BehaviorSubject,
+  combineLatest,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  switchAll,
+  switchMap
+} from "rxjs";
 import {Guid as guid} from "guid-typescript";
+import {db} from "../../db";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
 
-  subject$ = new BehaviorSubject<FormWithFields | FormWithFields[]>([]);
+  subject$ = new BehaviorSubject<Form | Form[]>([]);
   errors: string[] = [];
 
   constructor() {
@@ -23,12 +33,27 @@ export class FormService {
   }
 
   getByName(req: DBRequest): Observable<Form | undefined> {
-    return from(db.forms.where('name').equals(req.params['name']).first());
+    return from(db.forms.where({'name' :req.params['name']}).first());
   }
 
   getById(req: DBRequest): Observable<Form> {
-    const form$ = from(db.forms.where('id').equals(req.params['id']).first());
-    const relatedFields$ = from(db.fields.where('formId').equals(req.params['id']).toArray());
+    const form$ = from(db.forms.where({'id':req.params['id'] }).first());
+    const relatedFields$ = from(db.fields.where({'formId':req.params['id']}).toArray()).pipe(
+      switchMap((fields: Field[]) => {
+        const list: Observable<any>[] = [];
+        fields.forEach((field) => {
+          list.push(from(db.fieldItems.where({'fieldId':field.id}).toArray()).pipe(
+            map((items) => ({
+              ...field,
+              items: items
+            }))
+          ));
+        });
+        return combineLatest(list, (...arg: Field[]) => {
+          return [...arg];
+        })
+      })
+    );
     return combineLatest([form$, relatedFields$], (form, fields) => {
       return {
         ...form,
@@ -37,7 +62,7 @@ export class FormService {
     })
   }
 
-  create(form: FormWithFields): Observable<IndexableType> {
+  create(form: Form): Observable<IndexableType> {
     this.getByName({params: form})
       .subscribe((result) => {
         if (result) {
@@ -50,7 +75,7 @@ export class FormService {
     return this.saveForm(formId, form)
   }
 
-  update(id: string, form: FormWithFields): Observable<number> {
+  update(id: string, form: Form): Observable<number> {
     const cmdForm: Form = {
       name: form.name,
       displayName: form.displayName,
@@ -58,7 +83,7 @@ export class FormService {
     }
 
     const fieldList = [];
-    for (let field of form.fields) {
+    for (let field of form.fields || []) {
       fieldList.push({
         id: this.createGuid(),
         name: field.name,
@@ -108,7 +133,7 @@ export class FormService {
     return deleteFieldsSubject$;
   }
 
-  saveForm(formId: string, form: FormWithFields): Observable<IndexableType> {
+  saveForm(formId: string, form: Form): Observable<IndexableType> {
     const cmdForm: Form = {
       id: formId,
       name: form.name,
@@ -117,9 +142,11 @@ export class FormService {
     }
 
     const fieldList = [];
-    for (let field of form.fields) {
+    const itemList = [];
+    for (let field of form.fields || []) {
+      const fieldId = this.createGuid();
       fieldList.push({
-        id: this.createGuid(),
+        id: fieldId,
         name: field.name,
         display: field.display,
         accessLevel: field.accessLevel,
@@ -128,10 +155,28 @@ export class FormService {
         description: field.description,
         inputFormat: field.inputFormat,
         displayFormat: field.displayFormat,
-      })
+        required: field.required,
+        requiredTrue: field.requiredTrue,
+        placeholder: field.placeholder,
+        pattern: field.pattern,
+        min: field.min,
+        max: field.max,
+        minLength: field.minLength,
+        maxLength: field.maxLength,
+        repeatPassword: field.repeatPassword
+      });
+      for (let item of field.items || []) {
+        itemList.push({
+          id: this.createGuid(),
+          key: item.key,
+          value: item.value,
+          fieldId: fieldId
+        })
+      }
     }
 
     try {
+      db.fieldItems.bulkAdd(itemList);
       db.fields.bulkAdd(fieldList);
       return from(db.forms.add(cmdForm));
     } catch (error) {

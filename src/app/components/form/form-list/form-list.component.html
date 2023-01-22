@@ -1,9 +1,10 @@
 <div>
-  <data-table
+  <grid
     [data]="tableData"
     (onAddEvent) = "addForm()"
     (onRefreshEvent) = "refreshData()"
     (onDeleteEvent)="deleteForm($event)"
     (onEditEvent)="editForm($event)"
-  ></data-table>
+    (onPreviewEvent)="previewForm($event)"
+  ></grid>
 </div>

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {Field, Form, FormWithFields} from '../form-types';
+import {Field, FieldItem, Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from 'src/app/enums';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -26,6 +26,11 @@ const fieldModel = {
   accessLevel: ['', [
     Validators.required
   ]],
+  required: [false, []],
+  requiredTrue: [false, []],
+  placeholder: ['', []],
+  pattern: ['', []],
+  repeatPassword: [false, []]
 }
 
 @Component({
@@ -47,6 +52,7 @@ export class FormEntryComponent implements OnInit {
     editable: true
   };
   formOfFormCreator!: FormGroup;
+  fieldGroup !: FormGroup;
   formAccessLevels = ["superAdmin", "Admin", "user"];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { id: string },
@@ -57,9 +63,11 @@ export class FormEntryComponent implements OnInit {
               private dialog: MatDialog,
               private changeDetectorRef: ChangeDetectorRef,
               public dialogRef: MatDialogRef<FormEntryComponent>,
-              private logger : LoggerService) {
+              private logger: LoggerService) {
 
     this.id = this.data?.id;
+    this.fieldGroup = this.formBuilder.group(fieldModel);
+    this.fieldGroup.addControl('items', this.formBuilder.array([]))
     this.formOfFormCreator = this.formBuilder.group({
       name: ['', [
         Validators.required,
@@ -69,10 +77,7 @@ export class FormEntryComponent implements OnInit {
       displayName: ['', []],
       accessLevel: ['', [
         Validators.required
-      ]],
-      fields: this.formBuilder.array([
-        // this.formBuilder.group(fieldModel)
-      ]),
+      ]]
     });
   }
 
@@ -87,34 +92,31 @@ export class FormEntryComponent implements OnInit {
             console.log(result)
             if (result) {
               this.formOfFormCreator.patchValue(result);
+              this.formOfFormCreator.addControl('fields', this.formBuilder.array(result.fields || []));
               this.changeDetectorRef.detectChanges();
-              for (let field of (result as FormWithFields).fields) {
-                const group = this.formBuilder.group(fieldModel);
-                group.patchValue(field as Field);
-                this.addNewField(group);
-                this.refreshFieldData()
-              }
+              this.refreshFieldData();
             }
           },
           error: (err) => this.logger.show(err),
-          complete: () => {}
+          complete: () => {
+          }
         })
     }
   }
 
-  get name(): FormControl<any> {
+  get name(): FormControl<string> {
     return this.formOfFormCreator.get('name') as FormControl;
   }
 
-  get displayName() {
+  get displayName(): FormControl<string> {
     return this.formOfFormCreator.get('displayName') as FormControl;
   }
 
-  get accessLevel() {
+  get accessLevel(): FormControl<string> {
     return this.formOfFormCreator.get('accessLevel') as FormControl;
   }
 
-  get fields() {
+  get fields(): FormArray {
     return this.formOfFormCreator.get('fields') as FormArray;
   }
 
@@ -138,13 +140,25 @@ export class FormEntryComponent implements OnInit {
   refreshFieldData() {
     const fieldsTable = {
       ...this.fieldsTableData,
-      columns: this.fields.value
+      rows: this.fields.value.map((f: Field) => ({
+        ...f,
+        'custom_required': `<span>${!!f['required']}</span>` //use this code if type be 'custom'
+      })),
+      columns: [
+        {key: 'name', display: 'name'},
+        {key: 'display', display: 'display'},
+        {key: 'type', display: 'type'},
+        {key: 'required', display: 'required', type: 'boolean'},
+      ]
     };
     this.fieldsTableData = fieldsTable
     this.changeDetectorRef.detectChanges();
   }
 
   addNewField(newField: FormGroup) {
+    if (!this.fields)
+      this.formOfFormCreator.addControl('fields', this.formBuilder.array([]));
+
     this.fields.push(newField);
   }
 
@@ -196,5 +210,5 @@ enum fieldType {
   DateRange,
   List,
   Radio,
-  CheckbOX
+  CheckBox
 }

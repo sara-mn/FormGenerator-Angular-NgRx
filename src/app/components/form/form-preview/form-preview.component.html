@@ -1,0 +1,87 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <h2>New Form</h2>
+  <button mat-icon-button aria-label="close" mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-dialog-content class="mat-typography">
+
+  <div class="error-box" *ngIf="showErrors">
+    <ul>
+      <li *ngFor="let err of errors">{{err}}</li>
+    </ul>
+  </div>
+
+  <form [formGroup]="form">
+    <div class="padding-20">
+      <section class="padding-bottom-20 " fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-between center" layout-wrap>
+        <ng-container *ngFor="let field of fields">
+          <mat-form-field fxFlex="30" *ngIf="field.type === 'Text'">
+            <mat-label>{{field.display}}</mat-label>
+            <input type="text" matInput placeholder="" [formControlName]="field.name" [name]="field.name" >
+          </mat-form-field>
+          <mat-form-field fxFlex="30" *ngIf="field.type === 'Email'">
+            <mat-label>{{field.display}}</mat-label>
+            <input type="email" matInput placeholder="" [formControlName]="field.name" [name]="field.name" >
+          </mat-form-field>
+          <mat-form-field fxFlex="30" *ngIf="field.type === 'Password'">
+            <mat-label>{{field.display}}</mat-label>
+            <input type="password" matInput placeholder="" [formControlName]="field.name" [name]="field.name" >
+          </mat-form-field>
+          <mat-form-field fxFlex="30" *ngIf="field.type === 'TextArea'">
+            <mat-label>{{field.display}}</mat-label>
+            <textarea matInput [formControlName]="field.name"></textarea>
+          </mat-form-field>
+          <div fxFlex="30" *ngIf="field.type === 'CheckBox'">
+            <mat-checkbox [formControlName]="field.name">{{field.display}}</mat-checkbox>
+          </div>
+          <div fxFlex="30" *ngIf="field.type === 'Radio'">
+            <mat-label>{{field.display}}</mat-label>
+            <mat-radio-group [formControlName]="field.name">
+              <mat-radio-button value="auto">Auto</mat-radio-button>
+              <mat-radio-button value="always">Always</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div fxFlex="30" *ngIf="field.type === 'List'">
+            <mat-label>{{field.display}}</mat-label>
+            <mat-select required [formControlName]="field.name">
+              <mat-option>-- None --</mat-option>
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </div>
+          <div fxFlex="30" *ngIf="field.type === 'Date'">
+            <mat-label>{{field.display}}</mat-label>
+            <input matInput [matDatepicker]="picker" [formControlName]="field.name">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </div>
+          <div fxFlex="30" *ngIf="field.type === 'DateRange'">
+            <mat-label>{{field.display}}</mat-label>
+            <mat-date-range-input [formControlName]="field.name" [rangePicker]="picker">
+              <input matStartDate formControlName="start" placeholder="Start date">
+              <input matEndDate formControlName="end" placeholder="End date">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </div>
+          <!--          <mat-error>-->
+          <!--            <ul *errorMessages="{errors: name.errors, isValid :isFieldValid('name')}; errors as errors">-->
+          <!--              <li *ngFor="let error of errors">{{error['errorMessage']}}</li>-->
+          <!--            </ul>-->
+          <!--          </mat-error>-->
+          <!--        <mat-hint align="end">-->
+          <!--          <ul *errorMessages="{errors: name.errors, formControl : name}; errors as errors">-->
+          <!--            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>-->
+          <!--          </ul>-->
+          <!--        </mat-hint>-->
+          </ng-container>
+      </section>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button cdkFocusInitial>Save</button>
+</mat-dialog-actions>

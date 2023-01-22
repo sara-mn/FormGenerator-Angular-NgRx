@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, ComponentRef} from '@angular/core';
 import {Field, Form} from '../form-types';
 import {Table} from 'src/app/directives/grid/grid-types';
 import {FormService} from "../../../dbManaging/form.service";
@@ -7,6 +7,8 @@ import {AsyncSubject, Observable, switchMap, take, tap} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {LoggerService} from "../../../services/logger.service";
 import {AlertService} from "../../../services/alert.service";
+import {ComponentType} from "@angular/cdk/portal";
+import {FormPreviewComponent} from "../form-preview/form-preview.component";
 
 @Component({
   selector: 'app-form-list',
@@ -22,7 +24,7 @@ export class FormListComponent implements OnInit {
     addable: true,
     removable: true,
     editable: true,
-    columns: [{}]
+    rows: [{}]
   };
   formSubject$ = new AsyncSubject<Form[]>();
   fetch$: Observable<Form[]>
@@ -32,6 +34,7 @@ export class FormListComponent implements OnInit {
               private changeDetectorRef: ChangeDetectorRef,
               private logger : LoggerService,
               private alert : AlertService) {
+    this.fetch();
   }
 
   ngOnInit() {
@@ -47,7 +50,11 @@ export class FormListComponent implements OnInit {
         next: (cols: Form[]) => {
           const table = {
             ...this.tableData,
-            columns: cols
+            rows: cols,
+            columns: [
+              {key: 'name', display: 'name'},
+              {key: 'display', display: 'display'}
+            ]
           };
           this.tableData = table
         },
@@ -60,20 +67,28 @@ export class FormListComponent implements OnInit {
       });
   }
 
-  updateTableData(columns: Form[]) {
+  updateTableData(rows: Form[]) {
     let k: Table<Form> = {
       ...this.tableData,
-      columns
+      rows,
+      columns: [
+        {key: 'name', display: 'name'},
+        {key: 'display', display: 'display'}
+      ]
     };
     return k
   }
 
   addForm() {
-    this.showDialog();
+    this.showDialog(FormEntryComponent);
   }
 
   editForm(data:any) {
-    this.showDialog(data);
+    this.showDialog(FormEntryComponent,data);
+  }
+
+  previewForm(data:any) {
+    this.showDialog(FormPreviewComponent,data);
   }
 
   deleteForm(data: any) {
@@ -93,8 +108,8 @@ export class FormListComponent implements OnInit {
       });
   }
 
-  showDialog(data?:any){
-    const dialogRef = this.dialog.open(FormEntryComponent, {
+  showDialog<T>(component: ComponentType<T>,data?:any){
+    const dialogRef = this.dialog.open(component, {
       data
     });
     dialogRef.afterClosed().subscribe(result => {
