@@ -5,61 +5,78 @@
   </button>
 </div>
 <mat-dialog-content class="mat-typography">
+  <div *ngIf="!formSaved">
+    <div class="error-box" *ngIf="showErrors">
+      <ul>
+        <li *ngFor="let err of errors">{{err}}</li>
+      </ul>
+    </div>
 
-  <div class="error-box" *ngIf="showErrors">
-    <ul>
-      <li *ngFor="let err of errors">{{err}}</li>
-    </ul>
+    <form [formGroup]="formOfFormCreator">
+      <div class="padding-20">
+        <div class="padding-bottom-20" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="30" layout-wrap>
+          <mat-form-field fxFlex="30" class="">
+            <mat-label>Name</mat-label>
+            <input type="text" matInput placeholder="" formControlName="name" name="name" >
+            <mat-error>
+              <ul *errorMessages="{errors: name.errors, isValid :isFieldValid('name')}; errors as errors">
+                <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+              </ul>
+            </mat-error>
+            <!--        <mat-hint align="end">-->
+            <!--          <ul *errorMessages="{errors: name.errors, formControl : name}; errors as errors">-->
+            <!--            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>-->
+            <!--          </ul>-->
+            <!--        </mat-hint>-->
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" class="">
+            <mat-label>Display</mat-label>
+            <input type="text" matInput placeholder="" formControlName="displayName" name="display">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" class="">
+            <mat-label>AccessLevel</mat-label>
+            <mat-select #fontSize formControlName="accessLevel" name="accessLevel">
+              <mat-option *ngFor="let level of formAccessLevels" [value]="level">{{level}}</mat-option>
+            </mat-select>
+            <mat-error>
+              <ul *errorMessages="{errors: accessLevel.errors, isValid :isFieldValid('accessLevel')}; errors as errors">
+                <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+              </ul>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" class="">
+            <mat-label>ColumnCount</mat-label>
+            <mat-select #fontSize formControlName="columnCount" name="columnCount">
+              <mat-option *ngFor="let count of formColumnCount" [value]="count">{{count}}</mat-option>
+            </mat-select>
+            <mat-error>
+              <ul *errorMessages="{errors: columnCount.errors, isValid :isFieldValid('columnCount')}; errors as errors">
+                <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
+              </ul>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <fieldset class="sub-form">
+          <legend>fields</legend>
+          <grid
+            [data]="fieldsTableData"
+            (onAddEvent) = "addField()"
+            (onRefreshEvent) = "refreshFieldData()"
+          ></grid>
+        </fieldset>
+      </div>
+    </form>
   </div>
 
-  <form [formGroup]="formOfFormCreator">
-    <div class="padding-20">
-      <div class="padding-bottom-20" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-around center" layout-wrap>
-        <mat-form-field fxFlex="30" class="">
-          <mat-label>Name</mat-label>
-          <input type="text" matInput placeholder="" formControlName="name" name="name" >
-          <mat-error>
-            <ul *errorMessages="{errors: name.errors, isValid :isFieldValid('name')}; errors as errors">
-              <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
-            </ul>
-          </mat-error>
-          <!--        <mat-hint align="end">-->
-          <!--          <ul *errorMessages="{errors: name.errors, formControl : name}; errors as errors">-->
-          <!--            <li *ngFor="let error of errors">{{error['errorMessage']}}</li>-->
-          <!--          </ul>-->
-          <!--        </mat-hint>-->
-        </mat-form-field>
-
-        <mat-form-field fxFlex="30" class="">
-          <mat-label>Display</mat-label>
-          <input type="text" matInput placeholder="" formControlName="displayName" name="display">
-        </mat-form-field>
-
-        <mat-form-field fxFlex="30" class="">
-          <mat-label>AccessLevel</mat-label>
-          <mat-select #fontSize formControlName="accessLevel" name="accessLevel">
-            <mat-option *ngFor="let level of formAccessLevels" [value]="level">{{level}}</mat-option>
-          </mat-select>
-          <mat-error>
-            <ul *errorMessages="{errors: accessLevel.errors, isValid :isFieldValid('accessLevel')}; errors as errors">
-              <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
-            </ul>
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <fieldset class="sub-form">
-        <legend>fields</legend>
-        <grid
-          [data]="fieldsTableData"
-          (onAddEvent) = "addField()"
-          (onRefreshEvent) = "refreshFieldData()"
-        ></grid>
-      </fieldset>
-    </div>
-  </form>
+  <app-field-placement *ngIf="formSaved" [form]="formOfFormCreator.value"></app-field-placement>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button cdkFocusInitial (click)="saveForm()">Save</button>
+  <button mat-button *ngIf="formSaved" (click)="backToForm()">Back To Form</button>
+  <button mat-button cdkFocusInitial *ngIf="!formSaved" (click)="saveForm()">Save & next step</button>
+  <button mat-button cdkFocusInitial *ngIf="formSaved" (click)="saveForm()">Save</button>
 </mat-dialog-actions>

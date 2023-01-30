@@ -55,7 +55,7 @@ export class GridComponent implements OnInit, OnChanges {
       this.rows = this.data.rows;
 
     if (this.data.columns?.length) {
-      this.columns = this.data.columns;
+      this.columns = this.data.columns.filter(c => !['No.' , 'action'].includes(c.key));
       this.columns.unshift({key: 'No.', display: 'No.'});
       this.columns.push({key: 'action', display: 'action'});
       this.displayedColumns = this.columns.map(c => c.key);

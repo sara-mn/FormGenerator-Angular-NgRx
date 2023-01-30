@@ -7,7 +7,7 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angul
 import {FieldEntryComponent} from "../../field/field-entry/field-entry.component";
 import {Table} from "../../../directives/grid/grid-types";
 import {ValidateFormService} from "../../../services/validate.form.service";
-import {take} from "rxjs";
+import {Observer, Subscription, take} from "rxjs";
 import {LoggerService} from "../../../services/logger.service";
 
 const fieldModel = {
@@ -54,6 +54,8 @@ export class FormEntryComponent implements OnInit {
   formOfFormCreator!: FormGroup;
   fieldGroup !: FormGroup;
   formAccessLevels = ["superAdmin", "Admin", "user"];
+  formColumnCount = [1, 2, 3];
+  formSaved: boolean = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { id: string },
               private formService: FormService,
@@ -77,7 +79,10 @@ export class FormEntryComponent implements OnInit {
       displayName: ['', []],
       accessLevel: ['', [
         Validators.required
-      ]]
+      ]],
+      columnCount: ['', [
+        Validators.required
+      ]],
     });
   }
 
@@ -88,7 +93,7 @@ export class FormEntryComponent implements OnInit {
           take(1)
         )
         .subscribe({
-          next: (result) => {
+          next: (result: Form) => {
             console.log(result)
             if (result) {
               this.formOfFormCreator.patchValue(result);
@@ -97,10 +102,10 @@ export class FormEntryComponent implements OnInit {
               this.refreshFieldData();
             }
           },
-          error: (err) => this.logger.show(err),
+          error: (err: any) => this.logger.show(err),
           complete: () => {
           }
-        })
+        } as Observer<Form>)
     }
   }
 
@@ -116,6 +121,10 @@ export class FormEntryComponent implements OnInit {
     return this.formOfFormCreator.get('accessLevel') as FormControl;
   }
 
+  get columnCount(): FormControl<string> {
+    return this.formOfFormCreator.get('columnCount') as FormControl;
+  }
+
   get fields(): FormArray {
     return this.formOfFormCreator.get('fields') as FormArray;
   }
@@ -129,11 +138,13 @@ export class FormEntryComponent implements OnInit {
     const dialogRef = this.dialog.open(FieldEntryComponent, {
       //data: this.fieldsTableData,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.addNewField(result)
-      this.refreshFieldData();
-      this.errors = []
-    })
+    dialogRef.afterClosed().subscribe({
+      next: (result: FormGroup) => {
+        this.addNewField(result)
+        this.refreshFieldData();
+        this.errors = []
+      }
+    } as Observer<FormGroup>)
     this.name.markAsTouched()
   }
 
@@ -170,25 +181,38 @@ export class FormEntryComponent implements OnInit {
     if (this.fields.controls.length === 0)
       this.errors.push('field list cant be empty!')
 
+    let cmd: Form = this.formOfFormCreator.value;
+    cmd.fields?.forEach((f, index) => f.index = index);
+
     if (this.errors.length > 0) {
       this.showErrors = true;
     } else {
       const obs$ = this.id
-        ? this.formService.update(this.id, this.formOfFormCreator.value)
-        : this.formService.create(this.formOfFormCreator.value);
-      const saveSubscription = obs$.pipe()
+        ? this.formService.update(this.id, cmd)
+        : this.formService.create(cmd);
+      const saveSubscription: Subscription = obs$
         .subscribe({
-          next: (id) => {
+          next: (id: any) => {
             console.log(`form number ${id} is saved`);
-            this.close({id});
+            this.id ??= id;
           },
           error: err => this.logger.error(err.message),
           complete: () => {
             saveSubscription.unsubscribe();
-            this.logger.success()
+            this.logger.success();
+            this.formSaved = true;
           }
-        })
+        } as Observer<any>)
     }
+  }
+
+  saveFieldsPosition(){
+    this.close({id : this.id});
+  }
+
+  backToForm(){
+    this.formSaved = false;
+    this.refreshFieldData();
   }
 
   convertToArray(obj: any) {

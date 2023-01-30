@@ -166,8 +166,8 @@ export class FieldEntryComponent implements OnInit {
   }
 
   isFieldValid(fieldName: string , group?:  AbstractControl) {
-    // const control = (group ? group : this.fieldGroup as FormGroup).get(fieldName) as FormControl;
-    const control = this.fieldGroup.get(fieldName) as FormControl;
+    const control = (group ? group : this.fieldGroup as FormGroup).get(fieldName) as FormControl;
+    // const control = this.fieldGroup.get(fieldName) as FormControl;
     return (control.invalid && (control.dirty || control.touched))
   }
 }

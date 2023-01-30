@@ -35,6 +35,7 @@ import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.
 import {RouterModule} from "@angular/router";
 import { FormPreviewComponent } from './components/form/form-preview/form-preview.component';
 import {PipesModule} from "./pipes/pipes.module";
+import { FieldPlacementComponent } from './components/field/field-placement/field-placement.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import {PipesModule} from "./pipes/pipes.module";
     FieldEntryComponent,
     FormValidateErrorMessageDirective,
     FormPreviewComponent,
+    FieldPlacementComponent,
   ],
   // entryComponents:[
   //   LoginComponent

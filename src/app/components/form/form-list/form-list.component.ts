@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef, ComponentRef} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, ComponentRef, TemplateRef} from '@angular/core';
 import {Field, Form} from '../form-types';
 import {Table} from 'src/app/directives/grid/grid-types';
 import {FormService} from "../../../dbManaging/form.service";
@@ -94,26 +94,24 @@ export class FormListComponent implements OnInit {
   deleteForm(data: any) {
     const title = 'Are you sure?';
     const message = 'delete form'
-    this.alert.confirm(title,message)
-      .pipe(
-        take(1),
-        switchMap(() => this.formService.delete(data.id))
-      )
-      .subscribe({
+    this.alert.confirm(title,message, () =>
+      this.formService.delete(data.id).subscribe({
         next: () => {
           this.logger.success();
           this.fetch();
         },
         error: (err) => {this.logger.error(err.message)}
-      });
+      }));
   }
 
   showDialog<T>(component: ComponentType<T>,data?:any){
     const dialogRef = this.dialog.open(component, {
       data
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.fetch();
+    dialogRef.afterClosed().subscribe({
+      next:() => {
+        this.fetch();
+      }
     })
   }
 

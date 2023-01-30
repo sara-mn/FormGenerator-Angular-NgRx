@@ -3,7 +3,8 @@ export interface Form {
   name?: string,
   displayName?: string,
   accessLevel?: string,
-  fields?: Field[]
+  fields?: Field[],
+  columnCount?: number
 }
 
 export interface Field {
@@ -25,7 +26,9 @@ export interface Field {
   minLength?: number,
   maxLength?: number,
   repeatPassword?: boolean,
-  items?: FieldItem[]
+  items?: FieldItem[],
+  index: number,
+  _dragged?:boolean
 }
 
 export interface FormWithFields extends Form {
@@ -35,6 +38,7 @@ export interface FormWithFields extends Form {
 export interface FieldItem {
   id?: string,
   formId?: string,
+  fieldId?: string,
   key?: any,
   value?: any
 }

@@ -1,13 +1,13 @@
-import {ChangeDetectorRef, Component, Inject, OnInit, Type} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {FormService} from "../../../dbManaging/form.service";
 import {ValidateFormService} from "../../../services/validate.form.service";
 import {Enums} from "../../../enums";
 import {LoggerService} from "../../../services/logger.service";
 import {Table} from "../../../directives/grid/grid-types";
 import {Field, Form} from "../form-types";
-import {take} from "rxjs";
+import {Observer, take} from "rxjs";
 
 @Component({
   selector: 'app-form-preview',
@@ -30,6 +30,7 @@ export class FormPreviewComponent implements OnInit {
   form: FormGroup = new FormGroup({});
   formAccessLevels = ["superAdmin", "Admin", "user"];
   fields: Field[];
+  formColumnCount: number;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { id: string },
               private formService: FormService,
@@ -50,13 +51,20 @@ export class FormPreviewComponent implements OnInit {
           take(1)
         )
         .subscribe({
-          next: (result) => {
+          next: (result: Form) => {
             console.log(result)
             if (result) {
+              this.formColumnCount = result.columnCount ?? 1;
               if (result.fields && result.fields.length > 0) {
+                this.fields = result.fields;
                 this.fields.forEach(field => {
-                  if (field.name)
-                    this.form.addControl(field.name, this.formBuilder.control('', [Validators.required]))
+                  if (field.name) {
+                    if (field.type === 'DateRange') {
+                      this.form.addControl(field.name + 'start', this.formBuilder.control('', [Validators.required]))
+                      this.form.addControl(field.name + 'end', this.formBuilder.control('', [Validators.required]))
+                    } else
+                      this.form.addControl(field.name, this.formBuilder.control('', [Validators.required]))
+                  }
                 });
               }
               this.changeDetectorRef.detectChanges();
@@ -65,8 +73,7 @@ export class FormPreviewComponent implements OnInit {
           error: (err) => this.logger.show(err),
           complete: () => {
           }
-        })
+        } as Observer<Form>)
     }
   }
-
 }

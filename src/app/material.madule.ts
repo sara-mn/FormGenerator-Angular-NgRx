@@ -20,12 +20,14 @@ import {MAT_SELECT_CONFIG, MatSelectModule} from '@angular/material/select';
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from "@angular/router";
 import {MatDatepickerIntl, MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule, ShowOnDirtyErrorStateMatcher} from "@angular/material/core";
+import {MAT_DATE_FORMATS, MatNativeDateModule, ShowOnDirtyErrorStateMatcher} from "@angular/material/core";
 import {MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule} from "@angular/material/radio";
 import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions} from "@angular/material/checkbox";
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatCheckboxHarness} from '@angular/material/checkbox/testing';
 import {ErrorStateMatcher} from '@angular/material/core';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
   imports: [
@@ -54,21 +56,15 @@ import {ErrorStateMatcher} from '@angular/material/core';
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    DragDropModule,
+    MatAutocompleteModule
   ],
   providers: [
-    // {
-    //   provide: ErrorStateMatcher,
-    //   useClass: ShowOnDirtyErrorStateMatcher
-    // },
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
       useValue: {duration: 3000}
     },
-    // {
-    //   provide: MAT_CHECKBOX_DEFAULT_OPTIONS,
-    //   useValue: {clickAction: 'noop'} as MatCheckboxDefaultOptions
-    // },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS, //dialog
       useValue: {
@@ -109,6 +105,29 @@ import {ErrorStateMatcher} from '@angular/material/core';
     {
       provide: MatDatepickerIntl
     },
+
+    // {
+    //   provide: MAT_CHECKBOX_DEFAULT_OPTIONS,
+    //   useValue: {clickAction: 'noop'} as MatCheckboxDefaultOptions
+    // },
+    // {
+    //   provide: ErrorStateMatcher,
+    //   useClass: ShowOnDirtyErrorStateMatcher
+    // },
+    // {
+    //   provide: MAT_DATE_FORMATS,
+    //   useValue: {
+    //     parse: {
+    //       dateInput: 'LL',
+    //     },
+    //     display: {
+    //       dateInput: 'LL',
+    //       monthYearLabel: 'MMM YYYY',
+    //       dateA11yLabel: 'LL',
+    //       monthYearA11yLabel: 'MMMM YYYY',
+    //     }
+    //   }
+    // },
   ],
 })
 export class MaterialModule {

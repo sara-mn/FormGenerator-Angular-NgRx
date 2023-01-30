@@ -1,0 +1,85 @@
+<div class="padding-20">
+  <form cdkDropListGroup class="padding-bottom-20 dragDrop list-group" fxLayout="row wrap" fxLayout.xs="column"
+           fxLayoutGap="30" layout-wrap>
+
+    <div class="list-item"
+         *ngFor="let field of form.fields;let index = index;"
+         [class.dragged-item]="field._dragged"
+         [class.drop-zone-active]="!!draggedItem"
+         [class.drop-zone-over]="dropzone==field.index"
+         cdkDropList [cdkDropListData]="field"
+         fxFlex="{{form.columnCount === 1 ? '100' : form.columnCount === 2 ? '45' : '30'}}">
+
+
+      <div [cdkDragData]="field" cdkDrag
+           (cdkDragStarted)="dragStart($event)"
+           (cdkDragEnded)="dragEnd($event)"
+           (cdkDragDropped)="drop($event);dropzone=null"
+           (cdkDragEntered)="dragEnter($event);dropzone=field.index"
+           (cdkDragExited)="dropzone=null"
+           class="item-box">
+
+        <div class="custom-preview" *cdkDragPreview>{{field.display}}</div>
+        <div class="custom-placeholder" *cdkDragPlaceholder></div>
+
+        <mat-form-field *ngIf="field.type === 'Text'" class="disabled">
+          <mat-label>{{field.display}}</mat-label>
+          <input type="text" matInput [placeholder]="field.placeholder || ''"
+                 [name]="field.name" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'Tel'">
+          <mat-label>{{field.display}}</mat-label>
+          <input type="text" matInput [placeholder]="field.placeholder || ''"
+                 [name]="field.name">
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'Email'" class="disabled">
+          <mat-label>{{field.display}}</mat-label>
+          <input type="email" matInput [placeholder]="field.placeholder || ''"
+                 [name]="field.name" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'Password'" class="disabled">
+          <mat-label>{{field.display}}</mat-label>
+          <input type="password" matInput [name]="field.name" autocomplete="nope">
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'TextArea'" class="disabled">
+          <mat-label>{{field.display}}</mat-label>
+          <textarea matInput [placeholder]="field.placeholder || ''"></textarea>
+        </mat-form-field>
+        <div *ngIf="field.type === 'CheckBox'" class="disabled">
+          <mat-checkbox>{{field.display}}</mat-checkbox>
+        </div>
+        <div *ngIf="field.type === 'Radio'" class="disabled">
+          <mat-label>{{field.display}}:</mat-label>
+          <mat-radio-group>
+            <mat-radio-button class="padding-left-10"
+                              *ngFor="let item of field.items" [value]="item.key">{{item.value}}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <mat-form-field *ngIf="field.type === 'List'" class="disabled">
+          <mat-label>{{field.display}}:</mat-label>
+          <mat-select [attr.required]="field.required">
+            <mat-option *ngIf="!field.required">-- select --</mat-option>
+            <mat-option *ngFor="let item of field.items" value="item.key">{{item.value}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'Date'" class="disabled">
+          <mat-label>{{field.display}}</mat-label>
+          <input matInput [matDatepicker]="picker" autocomplete="off">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'DateRange'">
+          <mat-label>{{field.display}}</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" autocomplete="off">
+            <input matEndDate placeholder="End date" autocomplete="off">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>

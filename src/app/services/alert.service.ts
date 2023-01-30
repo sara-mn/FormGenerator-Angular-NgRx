@@ -1,53 +1,44 @@
 import {Injectable} from '@angular/core';
-import swal from "sweetalert";
-import {ButtonList} from "sweetalert/typings/modules/options/buttons";
-import {ContentOptions} from "sweetalert/typings/modules/options/content";
-import {SwalOptions} from "sweetalert/typings/modules/options";
+import Swal from 'sweetalert2' ;
+import swalWithBootstrapButtons from 'sweetalert2' ;
+
 import {from, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertService {
-  // swalConfig: SwalOptions;
 
   constructor() {
   }
 
-  confirm(title: string, description: string): Observable<any> {
-    return from(swal({
+  confirm(title: string, description: string, fn: () => {}) {
+    Swal.fire({
       title: title,
       text: description,
-      icon: "",
-      buttons: {
-        cancel: {
-          text: "Cancel",
-          value: null,
-          visible: false,
-          className: "",
-          closeModal: true,
-        },
-        confirm: {
-          text: "OK",
-          value: true,
-          visible: true,
-          className: "",
-          closeModal: true
-        }
-      },
-      // content: {
-      //   element: "input",
-      //   attributes: {
-      //     placeholder: "Type your password",
-      //     type: "password",
-      //   },
-      // },
-      // className: "red-bg",
-      // closeOnClickOutside: false,
-      // closeOnEsc: false,
-      // dangerMode: true,
-      // timer: 3000,
-    }))
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+          fn();
+          swalWithBootstrapButtons.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'Your imaginary file is safe :)',
+            'error'
+          )
+        }})
   }
 
   success(successMessage: string) {
@@ -55,11 +46,7 @@ export class AlertService {
   }
 
   error(message : string) {
-    return from(swal({
-      title: 'error',
-      text: message,
-      icon: "error",
-    }))
+
   }
 
   warning() {
