@@ -8,35 +8,11 @@
     "path": "/"
   },
   {
-    "id": 2,
-    "title": "login",
-    "display": "login",
-    "icon": "person",
-    "githubPath": "/FormBuilderDemo/login",
-    "path": "/login"
-  },
-  {
-    "id": 3,
-    "title": "register",
-    "display": "register",
-    "icon": "person_add",
-    "githubPath": "/FormBuilderDemo/register",
-    "path": "/register"
-  },
-  {
     "id": 5,
     "title": "forms",
     "display": "forms",
     "icon": "library_books",
     "githubPath": "/FormBuilderDemo/forms",
     "path": "/forms"
-  },
-  {
-    "id": 5,
-    "title": "fields",
-    "display": "fields",
-    "icon": "library_books",
-    "githubPath": "/FormBuilderDemo/field/list",
-    "path": "/field/list"
   }
 ]

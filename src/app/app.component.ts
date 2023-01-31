@@ -3,7 +3,7 @@ import menuItems from '../menuConfig.json';
 import {environment} from '../environments/environment';
 import {AuthGuard} from "./services/guard/auth.guard";
 import {Store} from "@ngrx/store";
-import {from, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {AppState} from "../types";
 import {Router} from "@angular/router";
 

@@ -1,14 +1,6 @@
 {
   "menu": [
     {
-      "id": 1,
-      "title": "dashboard",
-      "display": "dashboard",
-      "icon": "dashboard",
-      "githubPath" : "/FormBuilderDemo/",
-      "path": "/"
-    },
-    {
       "id": 2,
       "title": "login",
       "display": "login",
@@ -23,14 +15,6 @@
       "icon": "person_add",
       "githubPath" : "/FormBuilderDemo/register",
       "path": "/register"
-    },
-    {
-      "id": 5,
-      "title": "forms",
-      "display": "forms",
-      "icon": "library_books",
-      "githubPath" : "/FormBuilderDemo/form/list",
-      "path": "/form/list"
     },
     {
       "id": 5,
