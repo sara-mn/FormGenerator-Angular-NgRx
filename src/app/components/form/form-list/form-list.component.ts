@@ -1,6 +1,6 @@
 import {Component, OnInit, ChangeDetectorRef, ComponentRef, TemplateRef} from '@angular/core';
 import {Field, Form} from '../form-types';
-import {Table} from 'src/app/directives/grid/grid-types';
+import {Table} from '../../../directives/grid/grid-types';
 import {FormService} from "../../../dbManaging/form.service";
 import {FormEntryComponent} from "../form-entry/form-entry.component";
 import {AsyncSubject, Observable, switchMap, take, tap} from "rxjs";

@@ -5,14 +5,16 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {FormControl, NG_VALIDATORS, ValidationErrors} from "@angular/forms";
-import formErrors from './form.errors.json';
+import * as fEs from './form.errors.json';
 import {Error} from './validation.type'
+import {KeyValue} from "../../dbManaging/types";
 
 @Directive({
   selector: '[errorMessages]',
   providers: [{provide: NG_VALIDATORS, useExisting: FormValidateErrorMessageDirective, multi: true}],
 })
 export class FormValidateErrorMessageDirective {
+  formErrors: KeyValue = fEs;
   @Input('errorMessages') set errorMessages(control: { errors: any, isInValid: Boolean }) {
     this.errors = [];
     if (control.isInValid)
@@ -41,7 +43,7 @@ export class FormValidateErrorMessageDirective {
           return {
             errorTitle: error,
             returnedObject,
-            errorMessage: formErrors[error] ? formErrors[error] : 'error message is undefined , error title: ' + error  //.format(Object.values(returnedObject).join(','))
+            errorMessage: this.formErrors[error] ? this.formErrors[error] : 'error message is undefined , error title: ' + error  //.format(Object.values(returnedObject).join(','))
           }
         })
       }

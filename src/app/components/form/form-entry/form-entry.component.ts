@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {Field, FieldItem, Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
-import {Enums} from 'src/app/enums';
+import {Enums} from '../../../enums';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FieldEntryComponent} from "../../field/field-entry/field-entry.component";
 import {Table} from "../../../directives/grid/grid-types";

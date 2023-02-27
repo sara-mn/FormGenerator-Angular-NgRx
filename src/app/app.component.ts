@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import menuItems from '../menuConfig.json';
+import * as menuItems from '../menuConfig.json';
 import {environment} from '../environments/environment';
 import {AuthGuard} from "./services/guard/auth.guard";
 import {select, Store} from "@ngrx/store";
