@@ -1,4 +1,4 @@
-import * as dexie from 'Dexie';
+// import * as dexie from 'Dexie';
 
 export interface KeyValue {
     [key: string]: any;
@@ -14,9 +14,9 @@ export interface DBRequest{
     params : KeyValue
 }
 
-export interface DBResponse {
-}
+// export interface DBResponse {
+// }
 
-export interface DBEntity extends dexie.Table<object, dexie.IndexableType> {
-}
+// export interface DBEntity extends dexie.Table<object, dexie.IndexableType> {
+// }
 
