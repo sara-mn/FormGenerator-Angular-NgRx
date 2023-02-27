@@ -17,4 +17,8 @@ export class StorageService {
       localStorage.setItem(item.key,item.value);
     })
   }
+
+  clearStorage() {
+    localStorage.clear();
+  }
 }

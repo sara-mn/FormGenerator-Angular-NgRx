@@ -7,6 +7,9 @@ import {LoginRegisterService} from "../../services/login.register.service";
 import {Token} from "../models/user";
 import {Router} from "@angular/router";
 import {AlertService} from "../../services/alert.service";
+import {AppState} from "../app.state";
+import { Store } from '@ngrx/store';
+import {UserActions} from "../actions/user.action";
 
 
 @Injectable()
@@ -16,6 +19,7 @@ export class AuthEffects {
     private authService: LoginRegisterService,
     private router: Router,
     private alert: AlertService,
+    private store: Store<AppState>
   ) {
   }
 
@@ -79,17 +83,20 @@ export class AuthEffects {
   logout$ = createEffect(() =>
       this.actions$.pipe(
         ofType(AuthActions.logout),
-        exhaustMap(action => this.authService.logout()
+        exhaustMap(() => this.authService.logout()
           .pipe(
-            map((token: Token) => AuthActions.logoutSuccess(token)),
-            catchError((error: string) => of(AuthActions.logoutFailure({name: 'error', message: error}))))
-        ))
-    , {dispatch: false});
+            map(() =>
+              AuthActions.logoutSuccess({ message: 'you are logged out!'})),
+            catchError((error: string) =>
+              of(AuthActions.logoutFailure({name: 'error', message: error}))))
+        )));
 
   logoutSuccess$ = createEffect(() =>
       this.actions$.pipe(
         ofType(AuthActions.logoutSuccess),
-        tap(() => {
+        tap((result) => {
+          this.alert.success(result.message),
+          this.store.dispatch(UserActions.clear())
           this.router.navigateByUrl('/login')
         }))
     , {dispatch: false});

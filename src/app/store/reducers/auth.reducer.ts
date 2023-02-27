@@ -19,7 +19,8 @@ const initialState: AuthState = {
     expiration: ''
   },
   loading: false,
-  error: undefined
+  error: undefined,
+  logoutMessage: ''
 }
 
 export const AuthReducer = createReducer(
@@ -40,8 +41,10 @@ export const AuthReducer = createReducer(
     (state, action) => ({...state, loading: false, error: action})),
   on(
     AuthActions.loginExpired,
-    AuthActions.logoutSuccess,
     (state) => ({...state, loading: false, token: {token: '', expiration: ''}})),
+   on(
+    AuthActions.logoutSuccess,
+    (state,action) => ({...state, loading: false ,logoutMessage: action.message})),
   on(
     AuthActions.logoutFailure,
     (state, action) => ({...state, loading: false, error: action})),

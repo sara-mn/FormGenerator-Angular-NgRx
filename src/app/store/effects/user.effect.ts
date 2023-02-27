@@ -24,7 +24,7 @@ export class UserEffects {
       exhaustMap(action => this.userService.getById(action.userId)
         .pipe(
           map((user: User) =>
-            UserActions.getByIdSuccess({users : [user]})),
+            UserActions.getByIdSuccess(user)),
           catchError((error: string) =>
             of(UserActions.getByIdFailure({name: 'error', message: error})))))
     ));
@@ -40,6 +40,10 @@ export class UserEffects {
         ofType(UserActions.getByIdFailure),
         tap((err) =>
           this.alert.error(err.message)))
+    , {dispatch: false});
+
+  clear$ = createEffect(() =>
+      this.actions$.pipe(ofType(UserActions.clear))
     , {dispatch: false});
 
 }

@@ -5,7 +5,7 @@ export const usersSelector = (state: AppState) => state.user;
 
 export const userSelector = createSelector(
   usersSelector,
-  (user: UserState) => user.users[0]
+  (user: UserState) => user.user
 );
 
 export const userLoadingSelector = createSelector(

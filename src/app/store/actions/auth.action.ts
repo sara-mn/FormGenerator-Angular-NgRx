@@ -35,7 +35,7 @@ export const AuthActions = createActionGroup({
 
     'LOGOUT': emptyProps(),
 
-    'LOGOUT SUCCESS': props<Token>(),
+    'LOGOUT SUCCESS': props<{ message: string }>(),
 
     'LOGOUT FAILURE': props<Error>()
   }

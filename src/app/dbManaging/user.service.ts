@@ -37,8 +37,6 @@ export class UserService {
       }));
   }
 
-  logout(){}
-
   create(user: User): Observable<IndexableType> {
     const foundUser$ = from(db.users.where({email: user.email}).first())
       .pipe(map(user => {

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AuthApiService} from "../ApiManaging/auth.api.service";
-import {catchError, distinctUntilChanged, from, map, Observable, switchMap, take, tap} from "rxjs";
+import {catchError, distinctUntilChanged, from, map, Observable, of, switchMap, take, tap} from "rxjs";
 import {Router, UrlTree} from "@angular/router";
 import {UserService} from "../dbManaging/user.service";
 // import {LoginAction} from "../states/user.state";
@@ -52,8 +52,8 @@ export class LoginRegisterService {
       }))
   }
 
-  logout(): any {
-    return this.userService.logout()
+  logout(): Observable<any> {
+    return of(this.storageService.clearStorage());
   }
 
   isUserLoggedIn() {

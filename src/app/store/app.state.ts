@@ -6,11 +6,12 @@ export interface AuthState {
   userId: number,
   token: Token;
   loading: boolean;
-  error?: Error
+  error?: Error;
+  logoutMessage?: string;
 }
 
 export interface UserState {
-  users: User[];
+  user?: User;
   loading: boolean;
   error?: Error
 }
