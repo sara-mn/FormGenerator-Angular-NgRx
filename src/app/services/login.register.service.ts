@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthApiService} from "../ApiManaging/auth.api.service";
-import {distinctUntilChanged, from, map, Observable, switchMap, take, tap} from "rxjs";
+import {catchError, distinctUntilChanged, from, map, Observable, switchMap, take, tap} from "rxjs";
 import {Router, UrlTree} from "@angular/router";
-import {JwtProvider} from "../jwtProvider";
 import {UserService} from "../dbManaging/user.service";
 // import {LoginAction} from "../states/user.state";
 import {Login, Register, Token, User} from '../store/models/user';
@@ -15,7 +14,6 @@ import {UserActions} from "../store/actions/user.action";
   providedIn: 'root'
 })
 export class LoginRegisterService {
-  jwtProvider = new JwtProvider();
 
   constructor(private userService: UserService,
               private authApi: AuthApiService,
@@ -41,6 +39,9 @@ export class LoginRegisterService {
               if (userId)
                 this.store.dispatch(UserActions.getUserById({userId}));
             }))
+        }),
+        catchError(err => {
+          throw 'error occur: ' + err?.message;
         }))
   }
 

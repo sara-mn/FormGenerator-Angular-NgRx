@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import * as menuItems from '../menuConfig.json';
+import * as mIs from '../menuConfig.json';
 import {environment} from '../environments/environment';
 import {AuthGuard} from "./services/guard/auth.guard";
 import {select, Store} from "@ngrx/store";
@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   title = 'my-app';
   events: string[] = [];
   opened: boolean = true;
+  _menuItems = mIs;
   menuItems: Menu[];
   user$: Observable<User>
 
@@ -29,7 +30,7 @@ export class AppComponent implements OnInit {
               private storageService: StorageService) {
     this.user$ = this.store.pipe(select(userSelector));
 
-    this.menuItems = (menuItems as Menu[])
+    this.menuItems = this._menuItems.items
       .map(e => {
         return {
           ...e,
