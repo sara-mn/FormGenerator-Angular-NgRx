@@ -40,9 +40,10 @@
   background: transparent;
 }
 
-.toolbar-icon-btn{
-  color:white;
+.toolbar-icon-btn {
+  color: white;
 }
+
 .auto-z-index {
   z-index: auto;
 }
@@ -50,13 +51,14 @@
 mat-sidenav {
   width: 15%;
   padding-top: 75px;
-  background:#ffffff;  // #f1f4ff;
+  background: #ffffff; // #f1f4ff;
   border: 0;
   position: fixed;
+  min-width: 150px;
 }
 
 .mat-sidenav-content {
-  background:#ffffff;  // #f1f4ff;
+  background: #ffffff; // #f1f4ff;
   padding: 20px 40px;
   margin-top: 70px;
 }
@@ -76,10 +78,22 @@ mat-sidenav {
   position: absolute;
   right: 0;
   top: 0;
+  min-width: 230px;
+
+  button {
+    font-size: 3vw;
+    @media (min-width: 700px) {
+      font-size: 16px;
+    }
+  }
 }
 
 .mat-list-base .mat-list-item {
   color: #ffffff;
+  font-size: 3vw;
+  @media (min-width: 700px) {
+    font-size: 16px;
+  }
 }
 
 .margin-top-30 {
@@ -88,6 +102,13 @@ mat-sidenav {
 
 .padding-top-30 {
   padding-top: 30px;
+}
+
+mat-toolbar {
+  font-size: 3vw;
+  @media (min-width: 700px) {
+    font-size: 16px;
+  }
 }
 
 
