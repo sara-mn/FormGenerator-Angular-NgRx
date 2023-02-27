@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {AsyncSubject, catchError, map, Observable, of, pluck, shareReplay, tap} from "rxjs";
 import {HttpService} from "../services/http.service";
-import {User} from "../../types";
 import {Token_Payload} from "../components/auth/auth-types";
 import {ajax} from "rxjs/ajax";
+import {Token, User} from "../store/models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,9 @@ export class AuthApiService {
   constructor(private httpService: HttpService) {
   }
 
-  login(data: Token_Payload): Observable<any> {
-    return this.httpService.post(`${this.base_url}/auth/login`, data, {isAuthReq: true})
-      .pipe(shareReplay());
+  login(data: Token_Payload): Observable<Token> {
+    return this.httpService.post<Token>(`${this.base_url}/auth/login`, data, {isAuthReq: true});
+    // .pipe(shareReplay())
   }
 
   editProfile(id: string, data: User): Observable<any> {

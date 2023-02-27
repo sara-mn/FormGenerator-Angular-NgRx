@@ -1,11 +1,12 @@
 <div style="width: 500px">
   <div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
     <h2>Login</h2>
-<!--    <button mat-icon-button aria-label="close" mat-dialog-close>-->
-<!--      <mat-icon>close</mat-icon>-->
-<!--    </button>-->
+    <!--    <button mat-icon-button aria-label="close" mat-dialog-close>-->
+    <!--      <mat-icon>close</mat-icon>-->
+    <!--    </button>-->
   </div>
   <mat-dialog-content class="mat-typography">
+    <div>If you dont have account, please <a class="f-green italic bold" [routerLink]="'/register'">register!</a></div>
 
     <div class="error-box" *ngIf="showErrors">
       <ul>
@@ -17,11 +18,11 @@
       <div class="padding-20">
         <div class="padding-bottom-20" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="space-around center"
              layout-wrap>
-          <mat-form-field fxFlex="100" class="">
+          <mat-form-field fxFlex="100" class="padding-bottom-20">
             <mat-label>Username</mat-label>
             <input type="text" matInput placeholder="" formControlName="username" name="username">
             <mat-error>
-              <ul *errorMessages="{errors: username.errors, isValid :isFieldValid('username')}; errors as errors">
+              <ul *errorMessages="{errors: username.errors, isInValid :isFieldValid('username')}; errors as errors">
                 <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
               </ul>
             </mat-error>
@@ -32,7 +33,7 @@
             <input type="password" matInput placeholder="" formControlName="password" name="password">
           </mat-form-field>
           <mat-error>
-            <ul *errorMessages="{errors: password.errors, isValid :isFieldValid('password')}; errors as errors">
+            <ul *errorMessages="{errors: password.errors, isInValid :isFieldValid('password')}; errors as errors">
               <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
             </ul>
           </mat-error>
@@ -42,7 +43,10 @@
 
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-<!--    <button mat-button mat-dialog-close>Cancel</button>-->
-    <button mat-button cdkFocusInitial (click)="login()">Save</button>
+    <!--    <button mat-button mat-dialog-close>Cancel</button>-->
+    <button mat-button color="primary" mat-stroked-button cdkFocusInitial (click)="login()">
+      <span *ngIf="loading$ | async">Loading ...</span>
+      <span *ngIf="!(loading$ | async)">login</span>
+    </button>
   </mat-dialog-actions>
 </div>

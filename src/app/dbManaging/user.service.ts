@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {User} from '../../types';
 import {db} from "../../db";
 import {DBRequest, KeyValue} from "./types";
 import {IndexableType} from "dexie";
 import {from, map, Observable, combineLatest, filter, AsyncSubject} from "rxjs";
+import {User} from "../store/models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -13,41 +13,22 @@ export class UserService {
   constructor() {
   }
 
-  static async getAll(req: DBRequest) {
-    const users = await db.users.toArray();
-
-    return users || [];
-  }
-
-  static async getByToken(req: DBRequest): Promise<User> {
-    // let users = JSON.parse(localStorage.getItem('users') || '[]');
-    // const user = users.filter((e: KeyValue) => e.token === req.params.token);
-
-    const user = await db.users.get((e: KeyValue) => e['token'] === req.params['token']);
-    console.log(await this.getAll(req));
-    if (user)
-      return user;
-    else
-      throw 'user not found'
-  }
-
-  getById(req: DBRequest) {
-    return from(db.users.where({id: req.params['id']}).first())
-      .pipe(
-        filter(user => typeof user !== 'undefined')
-        //   map(user => {
-        //   if (typeof user === 'undefined') {
-        //     throw 'username not found !';
-        //   }
-        //   return user;
-        // })
+  getById(id: number): Observable<User> {
+    return from(db.users.where({id: id}).first())
+      .pipe( //filter(user => typeof user !== 'undefined')
+          map(user => {
+          if (typeof user === 'undefined') {
+            throw 'username not found !';
+          }
+          return user;
+        })
       );
   }
 
   getByEmailAndPassword(req: DBRequest): Observable<User> {
     // let users = JSON.parse(localStorage.getItem('users') || '[]');
     // const user = users.filter((e: KeyValue) => e.email === req.params.email && e.password === req.params.password);
-    return from(db.users.where({email: req.params['username'], password: req.params['password']}).first())
+    return from(db.users.where({username: req.params['username'], password: req.params['password']}).first())
       .pipe(map(user => {
         if (typeof user === 'undefined') {
           throw 'username or password is wrong!';
@@ -55,6 +36,8 @@ export class UserService {
         return user;
       }));
   }
+
+  logout(){}
 
   create(user: User): Observable<IndexableType> {
     const foundUser$ = from(db.users.where({email: user.email}).first())
@@ -67,11 +50,9 @@ export class UserService {
 
     const cmd: User = {
       name: user.name,
+      username: user.username,
       email: user.email,
-      password: user.password,
-      token: user.token,
-      rememberMe: user.rememberMe,
-      agreementWithRights: user.agreementWithRights
+      password: user.password
     }
     const saveUser$ = from(db.users.add(cmd));
 
@@ -88,14 +69,12 @@ export class UserService {
     }
   }
 
-  static async update(id: string, user: User): Promise<void> {
+  async update(id: string, user: User): Promise<void> {
     const cmd: User = {
       name: user.name,
+      username: user.username,
       email: user.email,
-      password: user.password,
-      token: user.token,
-      rememberMe: user.rememberMe,
-      agreementWithRights: user.agreementWithRights
+      password: user.password
     }
     try {
       await db.users.update(id, cmd); // 0 or 1 return

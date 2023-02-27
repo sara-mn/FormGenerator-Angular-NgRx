@@ -47,7 +47,8 @@ export class FieldService {
       type: field.type,
       description: field.description,
       inputFormat: field.inputFormat,
-      displayFormat: field.displayFormat
+      displayFormat: field.displayFormat,
+      index:field.index
     }
 
     try {
@@ -64,7 +65,8 @@ export class FieldService {
       type: field.type,
       description: field.description,
       inputFormat: field.inputFormat,
-      displayFormat: field.displayFormat
+      displayFormat: field.displayFormat,
+      index:field.index
     }
     try {
       await db.fields.update(id, cmd); // 0 or 1 return

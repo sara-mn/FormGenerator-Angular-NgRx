@@ -13,9 +13,9 @@ import {Error} from './validation.type'
   providers: [{provide: NG_VALIDATORS, useExisting: FormValidateErrorMessageDirective, multi: true}],
 })
 export class FormValidateErrorMessageDirective {
-  @Input('errorMessages') set errorMessages(control: { errors: any, isValid: Boolean }) {
+  @Input('errorMessages') set errorMessages(control: { errors: any, isInValid: Boolean }) {
     this.errors = [];
-    if (control.isValid)
+    if (control.isInValid)
       this.setErrorMessage(control.errors);
 
     if (!this.isViewCreated) {

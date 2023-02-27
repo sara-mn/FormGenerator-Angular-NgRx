@@ -1,72 +1,78 @@
 import {Injectable} from '@angular/core';
 import {AuthApiService} from "../ApiManaging/auth.api.service";
-import {AppState, User} from "../../types";
 import {distinctUntilChanged, from, map, Observable, switchMap, take, tap} from "rxjs";
-import {Store} from "@ngrx/store";
 import {Router, UrlTree} from "@angular/router";
 import {JwtProvider} from "../jwtProvider";
-import {Login, Register, Token_Payload} from "../components/auth/auth-types";
 import {UserService} from "../dbManaging/user.service";
-import {LoginAction} from "../states/user.state";
+// import {LoginAction} from "../states/user.state";
+import {Login, Register, Token, User} from '../store/models/user';
+import {StorageService} from "./storage.service";
+import {Store} from '@ngrx/store';
+import {AppState} from "../store/app.state";
+import {UserActions} from "../store/actions/user.action";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginRegisterService {
-  currentToken = localStorage.getItem('token');
   jwtProvider = new JwtProvider();
 
   constructor(private userService: UserService,
               private authApi: AuthApiService,
-              private store: Store<AppState>,
-              private router: Router) {
+              private storageService: StorageService,
+              private store: Store<AppState>) {
   }
 
-  login(cmd: Login): Observable<User> {
+  login(cmd: Login): Observable<Token> {
     return this.userService.getByEmailAndPassword({params: cmd})
       .pipe(
         take(1),
         switchMap((user: User) => {
-          const jwtPayload: Token_Payload = {
+          const jwtPayload = {
             payload: {
               userId: user.id
             }
           };
           return this.authApi.login(jwtPayload)
-            .pipe(tap((result) => this.setLocalStorage(result.token)))
-        }))
+            .pipe(tap((result) => {
+              const userId = jwtPayload.payload.userId;
+              this.storageService.setStorage([{key: 'token', value: result.token} , {key:'userId', value: userId}]);
 
-    // tap((user) => {
-    //   const actionPayload = {id: user.id};
-    //   this.store.dispatch(new LoginAction(actionPayload))
-    // })
+              if (userId)
+                this.store.dispatch(UserActions.getUserById({userId}));
+            }))
+        }))
   }
 
-  register(cmd: User): Observable<any> {
+  register(cmd: Register): Observable<any> {
     return this.userService.create(cmd)
+      .pipe(tap((result) => {
+        this.storageService.setStorage([{key: 'userId', value: result}]);
+      }))
+  }
+
+  logout(): any {
+    return this.userService.logout()
   }
 
   isUserLoggedIn() {
-    let currentUser;
-    const user$: Observable<User> = this.store.select('user') //(state : AppState) => state.user
-    user$.subscribe({
-      next: user => this.userService.userSubject$.next(user),
-      complete: () => this.userService.userSubject$.complete(),
-    })
-    // .pipe(
-    //   take(1),
-    //   distinctUntilChanged(),
-    //   map(user => {
-    //
-    // })).subscribe();
-    return true;
+    const hasToken = this.storageService.getStorage('token');
+    return !!hasToken;
   }
 
-  setLocalStorage(token: string) {
-    localStorage.setItem('token', token)
-  }
-
+// let currentUser;
+//     const user$: Observable<User> = this.store.select('user') //(state : AppState) => state.user
+//     user$.subscribe({
+//       next: user => this.userService.userSubject$.next(user),
+//       complete: () => this.userService.userSubject$.complete(),
+//     })
+//     .pipe(
+//       take(1),
+//       distinctUntilChanged(),
+//       map(user => {
 //
+//     })).subscribe();
+
 //   let token = this.currentToken;
 //   let k;
 //   if (!!token) {

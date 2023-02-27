@@ -41,12 +41,29 @@ export class AlertService {
         }})
   }
 
-  success(successMessage: string) {
-    //ToDo
+  success(successMessage: string,callback?: (...args: any[]) => {}) {
+    Swal.fire({
+      title: 'success',
+      text: successMessage,
+      icon: 'success',
+      showCancelButton: false,
+      confirmButtonText: 'ok',
+      reverseButtons: true
+    }).then((result) => {
+      if (callback)
+        callback([result]);
+    })
   }
 
   error(message : string) {
-
+    Swal.fire({
+      title: 'error',
+      text: message,
+      icon: 'error',
+      showCancelButton: false,
+      confirmButtonText: 'ok',
+      reverseButtons: true
+    }).then((result) => {})
   }
 
   warning() {

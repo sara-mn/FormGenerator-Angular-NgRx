@@ -1,29 +1,33 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import menuItems from '../menuConfig.json';
 import {environment} from '../environments/environment';
 import {AuthGuard} from "./services/guard/auth.guard";
-import {Store} from "@ngrx/store";
+import {select, Store} from "@ngrx/store";
 import {Observable} from "rxjs";
-import {AppState} from "../types";
 import {Router} from "@angular/router";
+import {User} from "./store/models/user";
+import {AppState} from "./store/app.state";
+import {userSelector} from "./store/selectors/user.selectors";
+import {UserActions} from "./store/actions/user.action";
+import {StorageService} from "./services/storage.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   isStaging: boolean = environment.staging;
   title = 'my-app';
   events: string[] = [];
   opened: boolean = true;
   menuItems: Menu[];
-  user$: Observable<any>
+  user$: Observable<User>
 
   constructor(private auth: AuthGuard,
               private store: Store<AppState>,
-              private router: Router) {
-    this.checkUser();
+              private storageService: StorageService) {
+    this.user$ = this.store.pipe(select(userSelector));
 
     this.menuItems = (menuItems as Menu[])
       .map(e => {
@@ -34,21 +38,19 @@ export class AppComponent {
       })
   }
 
-  checkUser() {
-    // this.user$ = this.store.select('user')
-    // this.user$.subscribe((user) => {
-    //   if (this.isEmptyObject(user))
-    //     from(this.router.navigate(['/login'])).subscribe();
-    // })
+  ngOnInit() {
+    const userId = this.storageService.getStorage('userId');
+    if (userId)
+      this.store.dispatch(UserActions.getUserById({userId: +userId}));
   }
 
-  isEmptyObject(obj: object) {
-    return (obj && (Object.keys(obj).length === 0));
-  }
-
-  showInfo() {
-    console.log("menu clicked")
-  }
+  // isEmptyObject(obj: object) {
+  //   return (obj && (Object.keys(obj).length === 0));
+  // }
+  //
+  // showInfo() {
+  //   console.log("menu clicked")
+  // }
 }
 
 interface Menu {

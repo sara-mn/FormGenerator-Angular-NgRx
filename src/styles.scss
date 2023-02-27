@@ -139,6 +139,18 @@ fieldset.sub-form {
   margin: 0 !important;
 }
 
+.f-green {
+  color: green;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 .disabled {
   pointer-events: none;
   user-select: none;
@@ -200,7 +212,7 @@ fieldset.sub-form {
   background: white;
   font-size: 14px;
 
-  >:first-child {
+  > :first-child {
     width: 100%;
   }
 }

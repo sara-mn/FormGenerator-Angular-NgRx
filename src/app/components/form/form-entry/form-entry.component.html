@@ -19,7 +19,7 @@
             <mat-label>Name</mat-label>
             <input type="text" matInput placeholder="" formControlName="name" name="name" >
             <mat-error>
-              <ul *errorMessages="{errors: name.errors, isValid :isFieldValid('name')}; errors as errors">
+              <ul *errorMessages="{errors: name.errors, isInValid :isFieldValid('name')}; errors as errors">
                 <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
               </ul>
             </mat-error>
@@ -41,7 +41,7 @@
               <mat-option *ngFor="let level of formAccessLevels" [value]="level">{{level}}</mat-option>
             </mat-select>
             <mat-error>
-              <ul *errorMessages="{errors: accessLevel.errors, isValid :isFieldValid('accessLevel')}; errors as errors">
+              <ul *errorMessages="{errors: accessLevel.errors, isInValid :isFieldValid('accessLevel')}; errors as errors">
                 <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
               </ul>
             </mat-error>
@@ -53,7 +53,7 @@
               <mat-option *ngFor="let count of formColumnCount" [value]="count">{{count}}</mat-option>
             </mat-select>
             <mat-error>
-              <ul *errorMessages="{errors: columnCount.errors, isValid :isFieldValid('columnCount')}; errors as errors">
+              <ul *errorMessages="{errors: columnCount.errors, isInValid :isFieldValid('columnCount')}; errors as errors">
                 <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
               </ul>
             </mat-error>

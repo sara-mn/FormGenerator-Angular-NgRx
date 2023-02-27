@@ -6,7 +6,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgrxModule} from "./states/ngrx.module";
+import {NgrxModule} from "./store/ngrx.module"
 import {HttpClientModule , HTTP_INTERCEPTORS} from "@angular/common/http";
 
 /*  config  */
@@ -36,6 +36,10 @@ import {RouterModule} from "@angular/router";
 import { FormPreviewComponent } from './components/form/form-preview/form-preview.component';
 import {PipesModule} from "./pipes/pipes.module";
 import { FieldPlacementComponent } from './components/field/field-placement/field-placement.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import {environment} from "../environments/environment";
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -65,12 +69,25 @@ import { FieldPlacementComponent } from './components/field/field-placement/fiel
     ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
-    NgrxModule,
     RouterModule,
-    PipesModule
+    PipesModule,
+
+    NgrxModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot(),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+      autoPause: true,
+      features: {
+        pause: false,
+        lock: true,
+        persist: true
+      }
+    })
   ],
   providers: [
-     AuthGuard,
+    AuthGuard,
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: RetryInterceptorService,

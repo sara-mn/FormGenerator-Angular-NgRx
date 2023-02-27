@@ -12,7 +12,7 @@
         <mat-label>Name</mat-label>
         <input type="text" matInput placeholder="" formControlName="name" name="name">
         <mat-error>
-          <ul *errorMessages="{errors: name.errors, isValid :isFieldValid('name')}; errors as errors">
+          <ul *errorMessages="{errors: name.errors, isInValid :isFieldValid('name')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -22,7 +22,7 @@
         <mat-label>Display</mat-label>
         <input type="text" matInput placeholder="" formControlName="display" name="display">
         <mat-error>
-          <ul *errorMessages="{errors: display.errors, isValid :isFieldValid('display')}; errors as errors">
+          <ul *errorMessages="{errors: display.errors, isInValid :isFieldValid('display')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -32,7 +32,7 @@
         <mat-label>Description</mat-label>
         <input type="text" matInput placeholder="" formControlName="description" name="description">
         <mat-error>
-          <ul *errorMessages="{errors: description.errors, isValid :isFieldValid('description')}; errors as errors">
+          <ul *errorMessages="{errors: description.errors, isInValid :isFieldValid('description')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -44,7 +44,7 @@
           <mat-option *ngFor="let type of fieldTypes" [value]="type">{{type}}</mat-option>
         </mat-select>
         <mat-error>
-          <ul *errorMessages="{errors: type.errors, isValid :isFieldValid('type')}; errors as errors">
+          <ul *errorMessages="{errors: type.errors, isInValid :isFieldValid('type')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -63,7 +63,7 @@
               <mat-label>Key</mat-label>
               <input type="text" matInput placeholder="" formControlName="key" name="key">
               <mat-error>
-                <ul *errorMessages="{errors: item.value['key'].errors, isValid :isFieldValid('key', item)}; errors as errors">
+                <ul *errorMessages="{errors: item.value['key'].errors, isInValid :isFieldValid('key', item)}; errors as errors">
                   <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
                 </ul>
               </mat-error>
@@ -73,7 +73,7 @@
               <mat-label>Value</mat-label>
               <input type="text" matInput placeholder="" formControlName="value" name="value">
               <mat-error>
-                <ul *errorMessages="{errors: item.value['value'].errors, isValid :isFieldValid('value', item)}; errors as errors">
+                <ul *errorMessages="{errors: item.value['value'].errors, isInValid :isFieldValid('value', item)}; errors as errors">
                   <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
                 </ul>
               </mat-error>
@@ -92,7 +92,7 @@
         <mat-label>InputFormat</mat-label>
         <input type="text" matInput placeholder="" formControlName="inputFormat" name="inputFormat">
         <mat-error>
-          <ul *errorMessages="{errors: inputFormat.errors, isValid :isFieldValid('inputFormat')}; errors as errors">
+          <ul *errorMessages="{errors: inputFormat.errors, isInValid :isFieldValid('inputFormat')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -102,7 +102,7 @@
         <mat-label>DisplayFormat</mat-label>
         <input type="text" matInput placeholder="" formControlName="displayFormat" name="displayFormat">
         <mat-error>
-          <ul *errorMessages="{errors: displayFormat.errors, isValid :isFieldValid('displayFormat')}; errors as errors">
+          <ul *errorMessages="{errors: displayFormat.errors, isInValid :isFieldValid('displayFormat')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -119,7 +119,7 @@
         <mat-label>Placeholder</mat-label>
         <input type="text" matInput placeholder="" formControlName="placeholder" name="placeholder">
         <mat-error>
-          <ul *errorMessages="{errors: placeholder.errors, isValid :isFieldValid('placeholder')}; errors as errors">
+          <ul *errorMessages="{errors: placeholder.errors, isInValid :isFieldValid('placeholder')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -129,7 +129,7 @@
         <mat-label>Pattern</mat-label>
         <input type="text" matInput placeholder="" formControlName="pattern" name="pattern">
         <mat-error>
-          <ul *errorMessages="{errors: pattern.errors, isValid :isFieldValid('pattern')}; errors as errors">
+          <ul *errorMessages="{errors: pattern.errors, isInValid :isFieldValid('pattern')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -139,7 +139,7 @@
         <mat-label>Min</mat-label>
         <input type="number" matInput placeholder="" formControlName="min" name="min">
         <mat-error>
-          <ul *errorMessages="{errors: min.errors, isValid :isFieldValid('min')}; errors as errors">
+          <ul *errorMessages="{errors: min.errors, isInValid :isFieldValid('min')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -149,7 +149,7 @@
         <mat-label>Max</mat-label>
         <input type="number" matInput placeholder="" formControlName="max" name="max">
         <mat-error>
-          <ul *errorMessages="{errors: max.errors, isValid :isFieldValid('max')}; errors as errors">
+          <ul *errorMessages="{errors: max.errors, isInValid :isFieldValid('max')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -159,7 +159,7 @@
         <mat-label>MinLength</mat-label>
         <input type="number" matInput placeholder="" formControlName="minLength" name="minLength">
         <mat-error>
-          <ul *errorMessages="{errors: minLength.errors, isValid :isFieldValid('minLength')}; errors as errors">
+          <ul *errorMessages="{errors: minLength.errors, isInValid :isFieldValid('minLength')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>
@@ -169,7 +169,7 @@
         <mat-label>MaxLength</mat-label>
         <input type="number" matInput placeholder="" formControlName="maxLength" name="maxLength">
         <mat-error>
-          <ul *errorMessages="{errors: maxLength.errors, isValid :isFieldValid('maxLength')}; errors as errors">
+          <ul *errorMessages="{errors: maxLength.errors, isInValid :isFieldValid('maxLength')}; errors as errors">
             <li *ngFor="let error of errors">{{error['errorMessage']}}</li>
           </ul>
         </mat-error>

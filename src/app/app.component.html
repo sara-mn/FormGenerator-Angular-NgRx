@@ -3,12 +3,16 @@
     <span class="">Admin Panel</span>
     <span class="spacer"></span>
     <div id="side-toolbar-section" fxLayout="row" fxLayoutAlign="end center">
-      <button mat-icon-button class="toolbar-icon-btn" aria-label="heart">
-        <mat-icon>favorite</mat-icon>
+      <button *ngIf="!(user$ | async)" mat-button class="toolbar-icon-btn" aria-label="login">
+        <mat-icon>login</mat-icon> login
       </button>
-      <button mat-icon-button class="toolbar-icon-btn" aria-label="share">
-        <mat-icon>share</mat-icon>
-      </button>
+
+      <div *ngIf="user$ | async as user" class="spacer" fxLayout="row" fxLayoutAlign="space-between center">
+        <span>welcome {{user.name}}!</span>
+        <button mat-button class="toolbar-icon-btn" aria-label="logout">
+          <mat-icon>logout</mat-icon> logout
+        </button>
+      </div>
     </div>
   </mat-toolbar>
 </div>

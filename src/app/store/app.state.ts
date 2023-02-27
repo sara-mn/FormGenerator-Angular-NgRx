@@ -1,5 +1,21 @@
-import {UserState} from './reducers/user.reducer'
+import {Login, Register, Token, User} from "./models/user";
+
+export interface AuthState {
+  login: Login;
+  register: Register,
+  userId: number,
+  token: Token;
+  loading: boolean;
+  error?: Error
+}
+
+export interface UserState {
+  users: User[];
+  loading: boolean;
+  error?: Error
+}
 
 export interface AppState {
-  readonly Auth : UserState
+  readonly auth : AuthState
+  readonly user : UserState
 };

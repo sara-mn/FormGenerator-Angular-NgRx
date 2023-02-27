@@ -1,23 +1,23 @@
 export interface User {
-  id?: string,
+  id?: number,
   name?: string,
+  username?: string
   email?: string,
   mobile?: string,
   password?: string,
-  token?: string,
   role?: string, //superAdmin , admin , user
 }
 
-export interface Register extends User{
+export interface Register extends User {
   rememberMe?: boolean,
   agreementWithRights?: boolean
 }
 
-export interface Login extends User{
-
+export interface Login extends User {
+  token?: Token
 }
 
 export interface Token {
   token: string;
-  expiration : string;
+  expiration: string;
 }
