@@ -51,6 +51,15 @@ export class MyDatabase extends Dexie {
         'requiredTrue,pattern,placeholder,repeatPassword,items',
       fieldItems: 'id,fieldId,formId,key,value'
     });
+    this.version(14).stores({
+      users: '++id,name,username,role,email,password',
+      forms: 'id,name,displayName,accessLevel,data,columnCount',
+      fields: 'id,formId ,name,display, type, ' +
+        'description,inputFormat, displayFormat,' +
+        ' min,max,minLength,maxLength,required,index' +
+        'requiredTrue,pattern,placeholder,repeatPassword,items',
+      fieldItems: 'id,fieldId,formId,key,value'
+    });
     this.open();
 
     // request.onupgradeneeded = (event) => {

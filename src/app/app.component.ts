@@ -3,8 +3,7 @@ import * as mIs from '../menuConfig.json';
 import {environment} from '../environments/environment';
 import {AuthGuard} from "./services/guard/auth.guard";
 import {select, Store} from "@ngrx/store";
-import {empty, Observable, SchedulerLike} from "rxjs";
-import {Router} from "@angular/router";
+import {map, Observable, tap} from "rxjs";
 import {User} from "./store/models/user";
 import {AppState} from "./store/app.state";
 import {userSelector} from "./store/selectors/user.selectors";
@@ -24,13 +23,14 @@ export class AppComponent implements OnInit {
   opened: boolean = true;
   _menuItems = mIs;
   menuItems: Menu[];
-  user$: Observable<User| undefined>;
+  user$: Observable<User | undefined>;
+  userId: string | null;
 
   constructor(private auth: AuthGuard,
               private store: Store<AppState>,
               private storageService: StorageService) {
     this.user$ = this.store.pipe(select(userSelector));
-
+    this.userId = this.storageService.getStorage('userId');
     this.menuItems = this._menuItems.items
       .map(e => {
         return {
@@ -41,12 +41,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const userId = this.storageService.getStorage('userId');
-    if (userId)
-      this.store.dispatch(UserActions.getUserById({userId: +userId}));
+    if (this.userId)
+      this.store.dispatch(UserActions.getUserById({userId: +this.userId}));
   }
 
-  logout(){
+  ngAfterViewInit() {
+    // if (this.userId)
+    //   this.user$.pipe(
+    //     tap((user: User | undefined) => {
+    //       if (user === undefined) this.logout()
+    //     })
+    //   ).subscribe()
+  }
+
+  logout() {
     this.store.dispatch(AuthActions.logout());
   }
 }

@@ -5,9 +5,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {MaterialModule} from "./material.madule";
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgrxModule} from "./store/ngrx.module"
-import {HttpClientModule , HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 
 /*  config  */
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
@@ -19,59 +18,43 @@ import {CdProfilerService} from './services/cd-profiler.service';
 
 /*  component  */
 import {AppComponent} from './app.component';
-import {FormListComponent} from './components/form/form-list/form-list.component';
-import {FormEntryComponent} from './components/form/form-entry/form-entry.component';
-import {FormDetailComponent} from './components/form/form-detail/form-detail.component';
-import {LoginComponent} from './components/auth/login/login.component';
-import {RegisterComponent} from './components/auth/register/register.component';
-import {UserListComponent} from './components/auth/user-list/user-list.component';
-import {ProfileComponent} from './components/auth/profile/profile.component';
-import {GridComponent} from "./directives/grid/grid.component";
-import {DataTableComponent} from './directives/data-table/data-table.component';
-import {FieldEntryComponent} from './components/field/field-entry/field-entry.component';
-import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
 import {AuthGuard} from "./services/guard/auth.guard";
 import {RetryInterceptorService} from "./services/interceptor/retry.interceptor.service";
 import {RouterModule} from "@angular/router";
-import { FormPreviewComponent } from './components/form/form-preview/form-preview.component';
 import {PipesModule} from "./pipes/pipes.module";
-import { FieldPlacementComponent } from './components/field/field-placement/field-placement.component';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
+import {StoreModule} from '@ngrx/store';
 import {environment} from "../environments/environment";
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import {FormListComponent} from "./components/form/form-list/form-list.component";
+import {SharedModule} from "./shared/shared.module";
+import {AuthModule} from "./components/auth/auth.module";
+import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
+    DashboardComponent,
     FormListComponent,
-    FormEntryComponent,
-    FormDetailComponent,
-    LoginComponent,
-    RegisterComponent,
-    UserListComponent,
-    ProfileComponent,
-    GridComponent,
-    DataTableComponent,
-    FieldEntryComponent,
-    FormValidateErrorMessageDirective,
-    FormPreviewComponent,
-    FieldPlacementComponent,
+    FormValidateErrorMessageDirective
   ],
-  // entryComponents:[
-  //   LoginComponent
-  // ],
+  exports: [
+    FormValidateErrorMessageDirective
+  ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
     ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
     RouterModule,
     PipesModule,
-
     NgrxModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot(),
@@ -84,10 +67,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
         lock: true,
         persist: true
       }
-    })
+    }),
+    SharedModule,
+    AuthModule,
+    // FormModule  => its not to be hear if we want use lazy load
   ],
   providers: [
-    AuthGuard,
+    // AuthGuard,
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: RetryInterceptorService,

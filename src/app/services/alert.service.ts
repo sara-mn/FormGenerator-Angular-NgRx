@@ -12,7 +12,7 @@ export class AlertService {
   constructor() {
   }
 
-  confirm(title: string, description: string, fn: () => {}) {
+  confirm(title: string, description: string, _callback?: Function) {
     Swal.fire({
       title: title,
       text: description,
@@ -23,22 +23,22 @@ export class AlertService {
       reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-          fn();
-          swalWithBootstrapButtons.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          )
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'Your imaginary file is safe :)',
-            'error'
-          )
-        }})
+          if (_callback) {
+            _callback();
+          }
+          // swalWithBootstrapButtons.fire(
+          //   'success'
+          // )
+        }
+        // else if (
+        //   /* Read more about handling dismissals below */
+        //   result.dismiss === Swal.DismissReason.cancel
+        // ) {
+        //   swalWithBootstrapButtons.fire(
+        //     'Cancelled'
+        //   )
+        // }
+    })
   }
 
   success(successMessage: string,callback?: (...args: any[]) => {}) {

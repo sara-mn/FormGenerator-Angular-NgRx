@@ -5,7 +5,7 @@ import {FormService} from "../../../dbManaging/form.service";
 import {ValidateFormService} from "../../../services/validate.form.service";
 import {Enums} from "../../../enums";
 import {LoggerService} from "../../../services/logger.service";
-import {Table} from "../../../directives/grid/grid-types";
+import {Table} from "../../../shared/grid/grid-types";
 import {Field, Form} from "../form-types";
 import {Observer, take} from "rxjs";
 

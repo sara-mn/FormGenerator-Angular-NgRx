@@ -41,7 +41,7 @@ export class UserService {
     const foundUser$ = from(db.users.where({email: user.email}).first())
       .pipe(map(user => {
         if (typeof user !== 'undefined') {
-          throw 'email is exist!';
+          throw 'email is exist now!';
         }
         return true;
       }));

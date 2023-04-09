@@ -1,6 +1,6 @@
 <div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
   <h2>New Form</h2>
-  <button mat-icon-button aria-label="close" mat-dialog-close>
+  <button mat-icon-button aria-label="close" (click)="close()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -75,7 +75,7 @@
   <app-field-placement *ngIf="formSaved" [form]="formOfFormCreator.value"></app-field-placement>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button (click)="close()">Cancel</button>
   <button mat-button *ngIf="formSaved" (click)="backToForm()">Back To Form</button>
   <button mat-button cdkFocusInitial *ngIf="!formSaved" (click)="saveForm()">Save & next step</button>
   <button mat-button cdkFocusInitial *ngIf="formSaved" (click)="saveForm()">Save</button>

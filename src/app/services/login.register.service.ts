@@ -28,7 +28,8 @@ export class LoginRegisterService {
         switchMap((user: User) => {
           const jwtPayload = {
             payload: {
-              userId: user.id
+              userId: user.id,
+              role: user.role
             }
           };
           return this.authApi.login(jwtPayload)
@@ -41,7 +42,7 @@ export class LoginRegisterService {
             }))
         }),
         catchError(err => {
-          throw 'error occur: ' + err?.message;
+          throw 'error occur: ' + err;
         }))
   }
 

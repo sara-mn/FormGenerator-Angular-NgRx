@@ -4,7 +4,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import {ViewportRuler} from '@angular/cdk/overlay';
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {Field, Form} from "../../form/form-types";
+import {Field, Form} from "../form-types";
 
 @Component({
   selector: 'app-field-placement',

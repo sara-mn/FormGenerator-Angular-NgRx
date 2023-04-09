@@ -1,14 +1,16 @@
 import {Component, OnInit, ChangeDetectorRef, ComponentRef, TemplateRef} from '@angular/core';
 import {Field, Form} from '../form-types';
-import {Table} from '../../../directives/grid/grid-types';
+import {Table} from '../../../shared/grid/grid-types';
 import {FormService} from "../../../dbManaging/form.service";
 import {FormEntryComponent} from "../form-entry/form-entry.component";
-import {AsyncSubject, Observable, switchMap, take, tap} from "rxjs";
+import {AsyncSubject, Observable, Observer, switchMap, take, tap} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {LoggerService} from "../../../services/logger.service";
 import {AlertService} from "../../../services/alert.service";
 import {ComponentType} from "@angular/cdk/portal";
 import {FormPreviewComponent} from "../form-preview/form-preview.component";
+import {ActivatedRoute, Router } from '@angular/router';
+import {Dialog} from "../../../shared/open.dialog/types";
 
 @Component({
   selector: 'app-form-list',
@@ -33,7 +35,9 @@ export class FormListComponent implements OnInit {
               private dialog: MatDialog,
               private changeDetectorRef: ChangeDetectorRef,
               private logger : LoggerService,
-              private alert : AlertService) {
+              private alert : AlertService,
+              private route: ActivatedRoute,
+              private router : Router) {
     this.fetch();
   }
 
@@ -53,7 +57,7 @@ export class FormListComponent implements OnInit {
             rows: cols,
             columns: [
               {key: 'name', display: 'name'},
-              {key: 'display', display: 'display'}
+              {key: 'displayName', display: 'display'}
             ]
           };
           this.tableData = table
@@ -64,7 +68,7 @@ export class FormListComponent implements OnInit {
           this.changeDetectorRef.detectChanges();  //   because zone change detection not support indexedDB
          // formSubscription.unsubscribe();        // use take(1) instead
         }
-      });
+      } as Observer<Form[]>);
   }
 
   updateTableData(rows: Form[]) {
@@ -80,15 +84,15 @@ export class FormListComponent implements OnInit {
   }
 
   addForm() {
-    this.showDialog(FormEntryComponent);
+    this.router.navigate(['create'], { relativeTo: this.route });
   }
 
-  editForm(data:any) {
-    this.showDialog(FormEntryComponent,data);
+  editForm(data: { id: string }) {
+    this.router.navigate(['edit',data.id], { relativeTo: this.route });
   }
 
-  previewForm(data:any) {
-    this.showDialog(FormPreviewComponent,data);
+  previewForm(data: { id: string }) {
+    this.router.navigate(['preview',data.id], { relativeTo: this.route });
   }
 
   deleteForm(data: any) {
@@ -102,17 +106,6 @@ export class FormListComponent implements OnInit {
         },
         error: (err) => {this.logger.error(err.message)}
       }));
-  }
-
-  showDialog<T>(component: ComponentType<T>,data?:any){
-    const dialogRef = this.dialog.open(component, {
-      data
-    });
-    dialogRef.afterClosed().subscribe({
-      next:() => {
-        this.fetch();
-      }
-    })
   }
 
   refreshData() {

@@ -1,32 +1,47 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import FormRoutes from './components/form/form-routing'
 import AuthRoutes from "./components/auth/auth-routing";
 import {AuthGuard} from "./services/guard/auth.guard";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import {FormModule} from "./components/form/form.module";
+import {FormListComponent} from "./components/form/form-list/form-list.component";
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard]
   },
-  ...FormRoutes,
+  {
+    path:'forms',
+    component: FormListComponent,
+    loadChildren: () => import('./components/form/form.module').then(m => m.FormModule),
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+   // canLoad: [AuthGuard] => because of we use lazyLoad for this module, canLoad never been fire
+  },
+  {
+    path: '',
+    redirectTo: '/dashboard',
+    pathMatch: 'full'
+  },
   ...AuthRoutes
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes),
-    // RouterModule.forChild([
-    //   {
-    //     path: '',
-    //     component: HomePage,
-    //     data: {shouldDetach: true}
-    //   },
-    // ]),
   ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
 }
+
+
+// RouterModule.forChild([
+//   {
+//     path: '',
+//     component: HomePage,
+//     data: {shouldDetach: true}
+//   },
+// ]),

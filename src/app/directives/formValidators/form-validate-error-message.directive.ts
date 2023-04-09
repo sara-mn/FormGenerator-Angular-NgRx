@@ -4,7 +4,7 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import {FormControl, NG_VALIDATORS, ValidationErrors} from "@angular/forms";
+import {NG_VALIDATORS, ValidationErrors} from "@angular/forms";
 import * as fEs from './form.errors.json';
 import {Error} from './validation.type'
 import {KeyValue} from "../../dbManaging/types";

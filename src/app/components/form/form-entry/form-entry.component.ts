@@ -4,11 +4,13 @@ import {Field, FieldItem, Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from '../../../enums';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {FieldEntryComponent} from "../../field/field-entry/field-entry.component";
-import {Table} from "../../../directives/grid/grid-types";
+import {FieldEntryComponent} from "../field-entry/field-entry.component";
+import {Table} from "../../../shared/grid/grid-types";
 import {ValidateFormService} from "../../../services/validate.form.service";
-import {Observer, Subscription, take} from "rxjs";
+import {Observable, Observer, Subscription, take} from "rxjs";
 import {LoggerService} from "../../../services/logger.service";
+import {CanComponentDeactivate} from "../../../services/guard/types";
+import {AlertService} from "../../../services/alert.service";
 
 const fieldModel = {
   name: ['', [
@@ -65,7 +67,8 @@ export class FormEntryComponent implements OnInit {
               private dialog: MatDialog,
               private changeDetectorRef: ChangeDetectorRef,
               public dialogRef: MatDialogRef<FormEntryComponent>,
-              private logger: LoggerService) {
+              private logger: LoggerService,
+              private alert: AlertService) {
 
     this.id = this.data?.id;
     this.fieldGroup = this.formBuilder.group(fieldModel);
@@ -200,6 +203,7 @@ export class FormEntryComponent implements OnInit {
           complete: () => {
             saveSubscription.unsubscribe();
             this.logger.success();
+            this.close({id : this.id});
             this.formSaved = true;
           }
         } as Observer<any>)
@@ -221,8 +225,8 @@ export class FormEntryComponent implements OnInit {
     })
   }
 
-  close(result: any) {
-    this.dialogRef.close(result);
+  close(result?: any) {
+    this.alert.confirm('confirm','are you sure to close dialog?', () => this.dialogRef.close(result))
   }
 }
 
