@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 
 /*  module  */
 import {BrowserModule} from '@angular/platform-browser';
@@ -85,6 +85,10 @@ import {FormValidateErrorMessageDirective} from "./directives/formValidators/for
     //   multi: true
     // },
 
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA
   ],
   bootstrap: [AppComponent]
 })
