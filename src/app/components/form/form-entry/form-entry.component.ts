@@ -1,15 +1,14 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {Field, FieldItem, Form} from '../form-types';
+import {Field, Form} from '../form-types';
 import {FormService} from '../../../dbManaging/form.service'
 import {Enums} from '../../../enums';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FieldEntryComponent} from "../field-entry/field-entry.component";
 import {Table} from "../../../shared/grid/grid-types";
 import {ValidateFormService} from "../../../services/validate.form.service";
-import {Observable, Observer, Subscription, take} from "rxjs";
+import {Observer, Subscription} from "rxjs";
 import {LoggerService} from "../../../services/logger.service";
-import {CanComponentDeactivate} from "../../../services/guard/types";
 import {AlertService} from "../../../services/alert.service";
 
 const fieldModel = {
@@ -42,7 +41,7 @@ const fieldModel = {
 })
 export class FormEntryComponent implements OnInit {
   result: any;
-  id: string;
+  form: Form;
   errors: string[] = [];
   showErrors: boolean = false;
   fieldsTableData: Table<Field> = {
@@ -59,7 +58,7 @@ export class FormEntryComponent implements OnInit {
   formColumnCount = [1, 2, 3];
   formSaved: boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { id: string },
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Form,
               private formService: FormService,
               private formBuilder: FormBuilder,
               private validateFormService: ValidateFormService,
@@ -70,7 +69,7 @@ export class FormEntryComponent implements OnInit {
               private logger: LoggerService,
               private alert: AlertService) {
 
-    this.id = this.data?.id;
+    this.form = this.data;
     this.fieldGroup = this.formBuilder.group(fieldModel);
     this.fieldGroup.addControl('items', this.formBuilder.array([]))
     this.formOfFormCreator = this.formBuilder.group({
@@ -90,25 +89,11 @@ export class FormEntryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.id) {
-      this.formService.getById({params: {id: this.id}})
-        .pipe(
-          take(1)
-        )
-        .subscribe({
-          next: (result: Form) => {
-            console.log(result)
-            if (result) {
-              this.formOfFormCreator.patchValue(result);
-              this.formOfFormCreator.addControl('fields', this.formBuilder.array(result.fields || []));
-              this.changeDetectorRef.detectChanges();
-              this.refreshFieldData();
-            }
-          },
-          error: (err: any) => this.logger.show(err),
-          complete: () => {
-          }
-        } as Observer<Form>)
+    if (this.form) {
+      this.formOfFormCreator.patchValue(this.form);
+      this.formOfFormCreator.addControl('fields', this.formBuilder.array(this.form.fields || []));
+      this.changeDetectorRef.detectChanges();
+      this.refreshFieldData();
     }
   }
 
@@ -190,20 +175,20 @@ export class FormEntryComponent implements OnInit {
     if (this.errors.length > 0) {
       this.showErrors = true;
     } else {
-      const obs$ = this.id
-        ? this.formService.update(this.id, cmd)
+      const obs$ = this.form.id
+        ? this.formService.update(this.form.id, cmd)
         : this.formService.create(cmd);
       const saveSubscription: Subscription = obs$
         .subscribe({
           next: (id: any) => {
             console.log(`form number ${id} is saved`);
-            this.id ??= id;
+            this.form.id ??= id;
           },
           error: err => this.logger.error(err.message),
           complete: () => {
             saveSubscription.unsubscribe();
             this.logger.success();
-            this.close({id : this.id});
+            this.close({id : this.form.id});
             this.formSaved = true;
           }
         } as Observer<any>)
@@ -211,7 +196,7 @@ export class FormEntryComponent implements OnInit {
   }
 
   saveFieldsPosition(){
-    this.close({id : this.id});
+    this.close({id : this.form.id});
   }
 
   backToForm(){

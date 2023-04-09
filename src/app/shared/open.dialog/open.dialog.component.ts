@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Observable, Observer } from 'rxjs';
 import {ComponentType} from "../grid/grid-types";
@@ -18,15 +18,13 @@ export class OpenDialogComponent implements CanComponentDeactivate{
               private router: Router) {
     this.route.data.subscribe({
       next: (result: Dialog<any>) => {
-        this.showDialog<ComponentType<any>>(result?.component , {...result?.config , id:this.route.snapshot.params['id']});
+        this.showDialog<ComponentType<any>>(result?.component , {...result?.config, data: result?.data});
       }
     } as Observer<any>)
   }
 
-  showDialog<T>(component: ComponentType<T>,data?:any){
-    const dialogRef = this.dialog.open(component, {
-      data
-    });
+  showDialog<T>(component: ComponentType<T>,config?: MatDialogConfig){
+    const dialogRef = this.dialog.open(component, config);
 
     dialogRef.afterClosed().subscribe({
       next:() => {
