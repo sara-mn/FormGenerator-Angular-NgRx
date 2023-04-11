@@ -33,17 +33,12 @@ import {DashboardComponent} from "./components/dashboard/dashboard.component";
 import {FormListComponent} from "./components/form/form-list/form-list.component";
 import {SharedModule} from "./shared/shared.module";
 import {AuthModule} from "./components/auth/auth.module";
-import {FormValidateErrorMessageDirective} from "./directives/formValidators/form-validate-error-message.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    FormListComponent,
-    FormValidateErrorMessageDirective
-  ],
-  exports: [
-    FormValidateErrorMessageDirective
+    FormListComponent
   ],
   imports: [
     BrowserModule,

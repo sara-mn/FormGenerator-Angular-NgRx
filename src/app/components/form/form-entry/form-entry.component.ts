@@ -188,7 +188,6 @@ export class FormEntryComponent implements OnInit {
           complete: () => {
             saveSubscription.unsubscribe();
             this.logger.success();
-            this.close({id : this.form.id});
             this.formSaved = true;
           }
         } as Observer<any>)

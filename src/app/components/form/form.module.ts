@@ -10,6 +10,7 @@ import {SharedModule} from "../../shared/shared.module";
 import {MaterialModule} from "../../material.madule";
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {DirectivesModule} from "../../directives/directives.module";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
     SharedModule,
     MaterialModule,
     ReactiveFormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    DirectivesModule
   ]
 })
 export class FormModule {

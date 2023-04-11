@@ -9,6 +9,7 @@ import {MaterialModule} from "../../material.madule";
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import {AppRoutingModule} from "../../app-routing.module";
+import {DirectivesModule} from "../../directives/directives.module";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {AppRoutingModule} from "../../app-routing.module";
     MaterialModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    AppRoutingModule
+    AppRoutingModule,
+    DirectivesModule
   ]
 })
 export class AuthModule { }
